@@ -2,9 +2,11 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        MainMenu mm1 = new MainMenu();
+        //MainMenu mm1 = new MainMenu();
 
-        GameProperty gp1 = new GameProperty();
+        LaunchWindow lw1 = new LaunchWindow();
+
+        //GameProperty gp1 = new GameProperty();
 
     }
 }
