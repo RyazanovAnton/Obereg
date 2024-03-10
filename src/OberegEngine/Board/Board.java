@@ -99,21 +99,34 @@ public class Board {
     public static Board createStandardBoard(){
         final Builder builder = new Builder();
         //black layout
-        builder.setPiece(new Rook(Alliance.VIKINGS, 0));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 1));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 2));
         builder.setPiece(new Rook(Alliance.VIKINGS, 3));
         builder.setPiece(new Rook(Alliance.VIKINGS, 4));
         builder.setPiece(new Rook(Alliance.VIKINGS, 5));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 6));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 7));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 8));
-       builder.setPiece(new King(Alliance.VIKINGS, 15));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 13));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 27));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 36));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 37));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 45));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 35));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 43));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 44));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 53));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 67));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 75));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 76));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 77));
+       // builder.setPiece(new King(Alliance.VIKINGS, 77));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 7));
         // White Layout
-        builder.setPiece(new Rook(Alliance.SLAVS, 72));
-        builder.setPiece(new King(Alliance.SLAVS, 60));
-        builder.setPiece(new Rook(Alliance.SLAVS, 80));
+        builder.setPiece(new King(Alliance.SLAVS, 40));
+        builder.setPiece(new Rook(Alliance.SLAVS, 22));
+        builder.setPiece(new Rook(Alliance.SLAVS, 31));
+        builder.setPiece(new Rook(Alliance.SLAVS, 49));
+        builder.setPiece(new Rook(Alliance.SLAVS, 58));
+        builder.setPiece(new Rook(Alliance.SLAVS, 38));
+        builder.setPiece(new Rook(Alliance.SLAVS, 39));
+        builder.setPiece(new Rook(Alliance.SLAVS, 41));
+        builder.setPiece(new Rook(Alliance.SLAVS, 42));
 
         // WHITE is the first!
         builder.setMoveMaker(Alliance.SLAVS);

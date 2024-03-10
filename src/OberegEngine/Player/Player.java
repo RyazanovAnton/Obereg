@@ -13,22 +13,22 @@ import java.util.List;
 
 public abstract class Player {
     protected final Board board;
-    protected final King playerKing;
+//    protected final King playerKing;
     protected final Collection<Move> legalMoves;
-    private final boolean isInCheck;
+//    private final boolean isInCheck;
 
     Player(final Board board,
            final Collection<Move> playerLegals,
            final Collection<Move> opponentLegals) {
         this.board = board;
-        this.playerKing = establishKing();
-        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
+//        this.playerKing = establishKing();
+//        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentLegals).isEmpty();
         this.legalMoves = Collections.unmodifiableCollection(playerLegals);
     }
 
-    public King getPlayerKing(){
-        return this.playerKing;
-    }
+//    public King getPlayerKing(){
+//        return this.playerKing;
+//    }
     public Collection<Move> getLegalMoves(){
         return this.legalMoves;
     }
@@ -42,44 +42,44 @@ public abstract class Player {
         return Collections.unmodifiableList(attackMoves);
     }
 
-    private King establishKing() {
-        for(final Piece piece : getActivePieces()){
-            if(piece.getPieceType().isKing()){
-                return (King) piece;
-            }
-        }
-        throw new RuntimeException("Shouldn't reach here! not a valid board!!!");
-    }
+//    private King establishKing() {
+//        for(final Piece piece : getActivePieces()){
+//            if(piece.getPieceType().isKing()){
+//                return (King) piece;
+//            }
+//        }
+//        throw new RuntimeException("Shouldn't reach here! not a valid board!!!");
+//    }
 
     public boolean isLegalMove(final Move move){
         return this.legalMoves.contains(move);
     }
 
 
-    public boolean isInCheck(){
-        return this.isInCheck;
-    }
+//    public boolean isInCheck(){
+//        return this.isInCheck;
+//    }
 
-    public boolean isInCheckMate(){
-        return this.isInCheck && !hasEscapeMoves();
-    }
+//    public boolean isInCheckMate(){
+//        return this.isInCheck && !hasEscapeMoves();
+//    }
     //TODO!!!
     //Не можешь сделать такой ход, что король не попадет под контроль
-    public boolean isInStaleMate(){
-        return !this.isInCheck && !hasEscapeMoves();
-    }
+//    public boolean isInStaleMate(){
+//        return !this.isInCheck && !hasEscapeMoves();
+//    }
     //Чтобы вычислить сможет ли Король сбежать, рассмотрим все допустимые ходы каждого из игороков
     public MoveTransition makeMove(final Move move){
         if(!isLegalMove(move)){
             return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transmitonBoard = move.execute();
-        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transmitonBoard.currentPlayer().
-                        getOpponent().getPlayerKing().getPiecePosition(),
-                transmitonBoard.currentPlayer().getLegalMoves());
-        if(!kingAttacks.isEmpty()){
-            return new MoveTransition(this.board, move, MoveStatus.LEAVE_PLAYER_IN_CHECK);
-        }
+//        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transmitonBoard.currentPlayer().
+//                        getOpponent().getPlayerKing().getPiecePosition(),
+//                transmitonBoard.currentPlayer().getLegalMoves());
+//        if(!kingAttacks.isEmpty()){
+//            return new MoveTransition(this.board, move, MoveStatus.LEAVE_PLAYER_IN_CHECK);
+//        }
         return new MoveTransition(transmitonBoard, move, MoveStatus.DONE);
     }
 

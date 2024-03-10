@@ -482,6 +482,15 @@ public class Table extends Observable {
 
 
         private void assignTileColor() {
+//            try {
+//                final BufferedImage image = ImageIO.read(new File("art/tile1.png"));
+//                add(new JLabel(new ImageIcon(image)));
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+
+
+
             if (BoardUtils.EIGHTH_ROW[this.tileId] ||
                     BoardUtils.SIXTH_ROW[this.tileId] ||
                     BoardUtils.FOURTH_ROW[this.tileId] ||
