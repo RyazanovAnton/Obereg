@@ -1,4 +1,4 @@
-package Windows;
+package OberegGUI;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

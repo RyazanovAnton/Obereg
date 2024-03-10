@@ -1,10 +1,12 @@
-package Windows;
+package OberegGUI;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+
 
 public class LaunchWindow extends JFrame {
     public LaunchWindow(){
@@ -13,6 +15,12 @@ public class LaunchWindow extends JFrame {
        // this.setVisible(true);
         this.setUndecorated(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        File f1 = new File("./images/launchlabel.jpg");
+        if (f1.exists()){
+            
+        }
+
         try {
             this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./images/launchlabel.jpg")))));
         } catch (IOException ex1) {

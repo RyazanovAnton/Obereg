@@ -1,4 +1,4 @@
-package Windows;
+package OberegGUI;
 
 import Music.myMusic;
 
