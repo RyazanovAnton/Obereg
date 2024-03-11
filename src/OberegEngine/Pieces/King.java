@@ -14,40 +14,37 @@ import java.util.Collections;
 import java.util.List;
 
 public class King extends Piece {
-
-    private final static int[] CANDIDATE_MOVE_COORDINATE = {-27, -18, -9, -3, -2, -1,  1, 2, 3, 9, 18, 27};
+    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -1, 1, 9};
+    private static final int MAXDISTANCE = 3;
 
     public King(final Alliance pieceAlliance, final int piecePosition) {
 
-        super(PieceType.KING, piecePosition, pieceAlliance, true);
-    }
-    public King(final Alliance pieceAlliance,
-                final int piecePosition,
-                final boolean isFirstMove) {
-
-        super(PieceType.KING, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.KING, piecePosition, pieceAlliance);
     }
     @Override
-    public Collection<Move> calculateLegalMoves(Board board) {
+    public Collection<Move> calculateLegalMoves(final Board board) {
+
         final List<Move> legalMoves = new ArrayList<>();
-
-        for (final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATE) {
-            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
-
-            if (isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
-                    isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
-                continue;
-            }
-            if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (!candidateDestinationTile.isTileOccupied()) {         // если плитка не занята
-                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-                    } else {
-                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
-                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-                        if (this.pieceAlliance != pieceAlliance) {            // если плитка занята фигурой противника
-                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+        for (final int candidateCoordinateOffset: CANDIDATE_MOVE_VECTOR_COORDINATES){
+            int candidateDestinationCoordinate = this.piecePosition;
+            for(int i =0; i<MAXDISTANCE; i++){
+                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
+                    if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
+                            isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)){
+                        break;
+                    }
+                    candidateDestinationCoordinate += candidateCoordinateOffset;
+                    if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
+                        final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
+                        if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
+                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                        } else {
+                            final Piece pieceAtDestination = candidateDestinationTile.getPiece();
+                            final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
+                            if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
+                                legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            }
+                            break;
                         }
                     }
                 }
@@ -59,7 +56,6 @@ public class King extends Piece {
     public King movePiece(Move move) {
         return new King(move.getMovedPiece().pieceAlliance, move.getDestinationCoordinate());
     }
-
     @Override
     public String toString(){
         return PieceType.KING.toString();
@@ -68,8 +64,8 @@ public class King extends Piece {
         return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || candidateOffset == -1 ||
                 candidateOffset == 7);
     }
-    private static boolean isEighthColumnExclusion(final  int currentPosition, final int candidateOffset){
-        return BoardUtils.EIGHTH_COLUMN[currentPosition]  && (candidateOffset == - 7|| candidateOffset == 1 ||
+    private static boolean isNinthColumnExclusion(final  int currentPosition, final int candidateOffset){
+        return BoardUtils.NINTH_COLUMN[currentPosition]  && (candidateOffset == - 7|| candidateOffset == 1 ||
                 candidateOffset == 9);
     }
 }

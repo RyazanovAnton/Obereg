@@ -10,17 +10,20 @@ public abstract class Piece {
     protected final PieceType pieceType;
     protected final int piecePosition;
     protected final Alliance pieceAlliance;
-    protected final boolean isFirstMove;
+//    protected final boolean isFirstMove;
     private final int cashedHashCode;
+    private  int horizontalCount;
+
 
     Piece(final PieceType pieceType,
           final int piecePosition,
-          final Alliance pieceAlliance,
-          final boolean isFirstMove){
+          final Alliance pieceAlliance
+//          final boolean isFirstMove
+    ){
         this.pieceType = pieceType;
         this.pieceAlliance = pieceAlliance;
         this.piecePosition = piecePosition;
-        this.isFirstMove = isFirstMove;
+//        this.isFirstMove = isFirstMove;
         this.cashedHashCode = computeHashCode();
     }
 
@@ -28,7 +31,7 @@ public abstract class Piece {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
-        result = 31 * result + (isFirstMove ? 1 : 0);
+//        result = 31 * result + (isFirstMove ? 1 : 0);
         return result;
     }
     // Переопределяем стандартный метод equals class Object с равенства ссылок, на равенство объектов
@@ -42,16 +45,18 @@ public abstract class Piece {
         }
         final Piece otherPiece = (Piece) other;
         return piecePosition == otherPiece.getPiecePosition() && pieceType == otherPiece.getPieceType() &&
-                pieceAlliance == otherPiece.getPieceAlliance() && isFirstMove == otherPiece.isFirstMove();
+                pieceAlliance == otherPiece.getPieceAlliance() ;
+
+//        && isFirstMove == otherPiece.isFirstMove()
     }
     @Override
     public int hashCode(){
         return this.cashedHashCode;
     }
 
-    public boolean isFirstMove(){
-        return this.isFirstMove;
-    }
+//    public boolean isFirstMove(){
+//        return this.isFirstMove;
+//    }
 
     public int getPiecePosition(){
         return this.piecePosition;

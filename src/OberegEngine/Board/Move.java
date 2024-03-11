@@ -9,7 +9,7 @@ public abstract class Move {
     protected final Board board;
     protected final Piece movedPiece;
     protected final int destinationCoordinate;
-    protected final boolean isFirstMove;
+//    protected final boolean isFirstMove;
     public static final Move NULL_MOVE = new NullMove();
 
 
@@ -19,7 +19,7 @@ public abstract class Move {
         this.board = board;
         this.movedPiece = movedPiece;
         this.destinationCoordinate = destinationCoordinate;
-        this.isFirstMove = movedPiece.isFirstMove();
+//        this.isFirstMove = movedPiece.isFirstMove();
     }
 
     private Move(final Board board,
@@ -27,7 +27,7 @@ public abstract class Move {
         this.board = board;
         this.destinationCoordinate = destinationCoordinate;
         this.movedPiece = null;
-        this.isFirstMove = false;
+
     }
     @Override
     public int hashCode(){
@@ -99,6 +99,7 @@ public abstract class Move {
         }
         @Override
         public String toString(){
+
             return movedPiece.getPieceType() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
@@ -115,8 +116,10 @@ public abstract class Move {
         }
         @Override
         public String toString(){
-            return movedPiece.getPieceType().toString() +
+            String moveResult = movedPiece.getPieceType().toString() +": " +
                     BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+            System.out.println(moveResult);
+            return moveResult;
 
         }
     }
@@ -155,44 +158,12 @@ public abstract class Move {
         }
     }
 
-    public static final class PawnMove extends Move{
-        public PawnMove(final Board board,
-                        final Piece movedPiece,
-                        final int destinationCoordinate) {
-            super(board, movedPiece, destinationCoordinate);
-        }
-        @Override
-        public boolean equals(final Object other){
-            return this == other || other instanceof PawnMove && super.equals(other);
-        }
-        @Override
-        public String toString(){
-            return BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
-        }
-    }
-    public static class PawnAttackMove extends AttackMove{
-        public PawnAttackMove(final Board board,
-                              final Piece movedPiece,
-                              final int destinationCoordinate,
-                              final Piece attackedPiece) {
-            super(board, movedPiece, destinationCoordinate, attackedPiece);
-        }
-        @Override
-        public boolean equals(final  Object other){
-            return this == other || other instanceof PawnAttackMove && super.equals(other);
-        }
-        @Override
-        public String toString(){
-            return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPiecePosition()).substring(0,1) +
-                    "x" + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
-        }
 
-    }
 
 
     public static final class NullMove extends Move{
         public NullMove() {
-            super(null, 65);  // неверное мустоназначение
+            super(null, 93);  // неверное мустоназначение
         }
         @Override
         public Board execute(){

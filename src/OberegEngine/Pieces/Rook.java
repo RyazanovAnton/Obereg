@@ -5,6 +5,7 @@ import OberegEngine.Board.Board;
 import OberegEngine.Board.BoardUtils;
 import OberegEngine.Board.Move;
 import OberegEngine.Board.Move.MajorAttackMove;
+import OberegEngine.Board.Move.MajorMove;
 import OberegEngine.Board.Tile;
 
 import java.util.ArrayList;
@@ -12,40 +13,90 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Rook extends Piece{
+public class Rook extends Piece {
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -1, 1, 9};
 
     public Rook(final Alliance pieceAlliance, final int piecePosition) {
-        super(PieceType.ROOK, piecePosition, pieceAlliance, true);
-    }
-    public Rook(final Alliance pieceAlliance,
-                final int piecePosition,
-                final boolean isFirstMove) {
-        super(PieceType.ROOK, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.ROOK, piecePosition, pieceAlliance);
     }
 
     @Override
     public Collection<Move> calculateLegalMoves(final Board board) {
 
         final List<Move> legalMoves = new ArrayList<>();
-        for (final int candidateCoordinateOffset: CANDIDATE_MOVE_VECTOR_COORDINATES){
+        for (final int candidateCoordinateOffset : CANDIDATE_MOVE_VECTOR_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
-            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
+            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                 if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
-                        isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)){
+                        isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
                     break;
                 }
                 candidateDestinationCoordinate += candidateCoordinateOffset;
-                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
+                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
-                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
-                    } else {
-                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
-                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-                        if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
-                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                    if (!candidateDestinationTile.isTileOccupied()) {         // если плитка не занята
+                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                        } else {
+
+                        if (board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
+                                board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() != this.pieceAlliance &&
+                                board.getTile(candidateDestinationCoordinate + 2).isTileOccupied() &&
+                                board.getTile(candidateDestinationCoordinate + 2).getPiece().getPieceAlliance() == this.pieceAlliance) {
+
+                            legalMoves.add(new MajorAttackMove(board,
+                                    this, candidateDestinationCoordinate,
+                                    board.getTile(candidateDestinationCoordinate+1).getPiece()));
+                            //board.getTile(candidateDestinationCoordinate)=new Tile.EmptyTile();
+
                         }
+//                    if (candidateDestinationTile.isTileOccupied()) {
+//                        if (board.getTile(candidateDestinationCoordinate).isTileOccupied() &&
+//                                board.getTile(candidateDestinationCoordinate).getPiece().getPieceAlliance() != this.pieceAlliance &&
+//                                board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
+//                                board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() == this.pieceAlliance){
+//                            legalMoves.add(new MajorAttackMove(board,
+//                                    this, candidateDestinationCoordinate,
+//                                    board.getTile(candidateDestinationCoordinate).getPiece()));
+//                    }
+
+
+//                        if(!candidateDestinationTile.isTileOccupied()) {
+//                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+//                        }
+
+
+//                        if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
+//                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+//                        } else {
+//                            if (board.getTile(candidateDestinationCoordinate).isTileOccupied() &&
+//                                    board.getTile(candidateDestinationCoordinate).getPiece().getPieceAlliance() != this.pieceAlliance &&
+//                                    board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
+//                                    board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() == this.pieceAlliance){
+//                                legalMoves.add(new MajorAttackMove(board,
+//                                        this, candidateDestinationCoordinate,
+//                                        board.getTile(candidateDestinationCoordinate).getPiece()));
+//
+//                            }
+
+
+//                        final int coordinatePieceUnderAttack = candidateDestinationTile.getTileCoordinate() + 1;
+//                        final Piece pieceUnderAttack = candidateDestinationTile.getPiece();
+//                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
+//                        final int coordinateBehindAttackPiece = coordinatePieceUnderAttack + 1;
+
+//
+//                        if (board.getTile(candidateDestinationCoordinate+1).isTileOccupied() && this.pieceAlliance != pieceAlliance)
+//                        if(board.getTile(coordinateBehindAttackPiece).getPiece().getPieceAlliance() != this.pieceAlliance){
+
+
+                        //Alliance alliancePieceUnderAttack =
+
+
+//                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
+//                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
+                        //if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
+                        //    legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                        // }
                         break;
                     }
                 }
@@ -53,20 +104,23 @@ public class Rook extends Piece{
         }
         return Collections.unmodifiableList(legalMoves);
     }
+
     @Override
     public Rook movePiece(Move move) {
         return new Rook(move.getMovedPiece().pieceAlliance, move.getDestinationCoordinate());
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return PieceType.ROOK.toString();
     }
-    private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset== -1);
+
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -1);
     }
 
-    private static boolean isNinthColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtils.NINTH_COLUM[currentPosition] && (candidateOffset== 1);
+    private static boolean isNinthColumnExclusion(final int currentPosition, final int candidateOffset) {
+        return BoardUtils.NINTH_COLUMN[currentPosition] && (candidateOffset == 1);
     }
 }
 
