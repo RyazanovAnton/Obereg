@@ -1,15 +1,18 @@
-import OberegEngine.Board.Board;
-import OberegGUI.MyTable;
+import OberegGUI.MyGameTable;
 import OberegGUI.Table;
 
 public class Tests {
     public static void main(String[] args) {
     //    Board board = Board.createStandardBoard();
      //   System.out.println(board);
-      //  Table.get().show();
+       //
+        //Table.get().show();
+       //Table mt1 = new Table();
 
 
-        MyTable mt1 = new MyTable();
+      MyGameTable mt1 = new MyGameTable();
+
+       //MyGameTable.get().show();
 
 
 
