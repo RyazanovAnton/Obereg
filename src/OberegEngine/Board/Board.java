@@ -60,7 +60,24 @@ public class Board {
         return tile.toString();
     }
 
-
+    public boolean isLeftAttackPosition(Tile tile){
+        if(this.getTile(tile.tileCoordinate-1).isTileOccupied() &&
+                this.getTile(tile.tileCoordinate-1).getPiece().getPieceAlliance() !=
+                        this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
+            //System.out.println();
+            return true;
+        }
+        return false;
+    }
+    public boolean isRightAttackPosition(Tile tile){
+        if(this.getTile(tile.tileCoordinate+1).isTileOccupied() &&
+                this.getTile(tile.tileCoordinate+1).getPiece().getPieceAlliance() !=
+                        this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
+            //System.out.println();
+            return true;
+        }
+        return false;
+    }
 
 
     private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {

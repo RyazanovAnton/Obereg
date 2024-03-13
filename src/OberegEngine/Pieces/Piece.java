@@ -2,6 +2,7 @@ package OberegEngine.Pieces;
 
 import OberegEngine.Alliance;
 import OberegEngine.Board.Board;
+import OberegEngine.Board.BoardUtils;
 import OberegEngine.Board.Move;
 
 import java.util.Collection;
@@ -9,23 +10,26 @@ import java.util.Collection;
 public abstract class Piece {
     protected final PieceType pieceType;
     protected final int piecePosition;
+    protected boolean leftAttackPosition;
     protected final Alliance pieceAlliance;
 //    protected final boolean isFirstMove;
-    private final int cashedHashCode;
+    //private final int cashedHashCode;
     private  int horizontalCount;
+    private boolean leftOpponent;
 
 
     Piece(final PieceType pieceType,
           final int piecePosition,
           final Alliance pieceAlliance
-//          final boolean isFirstMove
     ){
         this.pieceType = pieceType;
         this.pieceAlliance = pieceAlliance;
         this.piecePosition = piecePosition;
-//        this.isFirstMove = isFirstMove;
-        this.cashedHashCode = computeHashCode();
+
+        //this.cashedHashCode = computeHashCode();
     }
+
+
 
     private int computeHashCode() {
         int result = pieceType.hashCode();
@@ -49,10 +53,10 @@ public abstract class Piece {
 
 //        && isFirstMove == otherPiece.isFirstMove()
     }
-    @Override
-    public int hashCode(){
-        return this.cashedHashCode;
-    }
+//    @Override
+//    public int hashCode(){
+//        return this.cashedHashCode;
+//    }
 
 //    public boolean isFirstMove(){
 //        return this.isFirstMove;
@@ -76,6 +80,17 @@ public abstract class Piece {
     }
     public abstract Collection<Move> calculateLegalMoves(final Board board);
     public abstract Piece movePiece(Move move);
+
+    public boolean setLeftopponent() {
+        return this.leftOpponent = true;
+    }
+    public boolean getLeftOpponent(){
+        return this.leftOpponent;
+    }
+
+//    public Piece removePiece() {
+//        return null;
+//    }
 
     public enum PieceType{
         ROOK("R", 500) {

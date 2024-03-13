@@ -142,13 +142,47 @@ public class MyGameTable {
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
+                                for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+                                    if (chessBoard.getTile(i).isTileOccupied()){
+                                        //System.out.println(chessBoard.getTile(i).isTileOccupied());
+                                        if(BoardUtils.isValidTileCoordinate(i-1)){
+                                            System.out.println(i);
+                                            System.out.println("left " + BoardUtils.isValidTileCoordinate(i-1));
+                                            if(chessBoard.isLeftAttackPosition(chessBoard.getTile(i))){
+                                                chessBoard.getTile(i).getPiece().setLeftopponent();
+                                                System.out.println(chessBoard.getTile(i).getPiece().setLeftopponent());
+                                            }
+
+
+                                            System.out.println();
+                                            System.out.println();
+
+                                        }
+                                    }
+                                }
+                                for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+                                    if (chessBoard.getTile(i).isTileOccupied()) {
+                                        if(BoardUtils.isValidTileCoordinate(i-1)) {
+                                            if(chessBoard.getTile(i).getPiece().getLeftOpponent()){
+                                                System.out.println(i + ": FIND!!!");
+//                                                Tile.EmptyTile em1 = new Tile.EmptyTile(i);
+                                                //chessBoard.getTile(i).getPiece().removePiece();
+                                                //chessBoard.getTile(i).getPiece().getPieceAlliance();
+                                            }
+
+                                        }
+                                    }
+                                }
                                 //moveLog.addMove(move);
                             }
                             sourceTile = null;
                             destinationTile = null;
                             humanMovedPiece = null;
+
                         }
                         boardPanel.drawBoard(chessBoard);
+
+
 //                        SwingUtilities.invokeLater(new Runnable() {
 //                            @Override
 //                            public void run() {
