@@ -1,3 +1,4 @@
+import OberegGUI.GameBoard;
 import OberegGUI.MyGameTable;
 import OberegGUI.Table;
 
@@ -14,6 +15,8 @@ public class Tests {
 
        //MyGameTable.get().show();
 
+
+        //GameBoard gb1 = new GameBoard();
 
 
     }

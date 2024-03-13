@@ -36,72 +36,24 @@ public class Rook extends Piece {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                     if (!candidateDestinationTile.isTileOccupied()) {         // если плитка не занята
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-                        } else {
+                    } else {
 
-                        if (board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
-                                board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() != this.pieceAlliance &&
-                                board.getTile(candidateDestinationCoordinate + 2).isTileOccupied() &&
-                                board.getTile(candidateDestinationCoordinate + 2).getPiece().getPieceAlliance() == this.pieceAlliance) {
-
-                            legalMoves.add(new MajorAttackMove(board,
-                                    this, candidateDestinationCoordinate,
-                                    board.getTile(candidateDestinationCoordinate+1).getPiece()));
-                            //board.getTile(candidateDestinationCoordinate)=new Tile.EmptyTile();
-
-                        }
-//                    if (candidateDestinationTile.isTileOccupied()) {
-//                        if (board.getTile(candidateDestinationCoordinate).isTileOccupied() &&
-//                                board.getTile(candidateDestinationCoordinate).getPiece().getPieceAlliance() != this.pieceAlliance &&
-//                                board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
-//                                board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() == this.pieceAlliance){
+//                        if (board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
+//                                board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() != this.pieceAlliance &&
+//                                board.getTile(candidateDestinationCoordinate + 2).isTileOccupied() &&
+//                                board.getTile(candidateDestinationCoordinate + 2).getPiece().getPieceAlliance() == this.pieceAlliance) {
+//
 //                            legalMoves.add(new MajorAttackMove(board,
 //                                    this, candidateDestinationCoordinate,
-//                                    board.getTile(candidateDestinationCoordinate).getPiece()));
-//                    }
-
-
-//                        if(!candidateDestinationTile.isTileOccupied()) {
-//                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+//                                    board.getTile(candidateDestinationCoordinate + 1).getPiece()));
+//                            //board.getTile(candidateDestinationCoordinate)=new Tile.EmptyTile();
 //                        }
-
-
-//                        if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
-//                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-//                        } else {
-//                            if (board.getTile(candidateDestinationCoordinate).isTileOccupied() &&
-//                                    board.getTile(candidateDestinationCoordinate).getPiece().getPieceAlliance() != this.pieceAlliance &&
-//                                    board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
-//                                    board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() == this.pieceAlliance){
-//                                legalMoves.add(new MajorAttackMove(board,
-//                                        this, candidateDestinationCoordinate,
-//                                        board.getTile(candidateDestinationCoordinate).getPiece()));
-//
-//                            }
-
-
-//                        final int coordinatePieceUnderAttack = candidateDestinationTile.getTileCoordinate() + 1;
-//                        final Piece pieceUnderAttack = candidateDestinationTile.getPiece();
-//                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-//                        final int coordinateBehindAttackPiece = coordinatePieceUnderAttack + 1;
-
-//
-//                        if (board.getTile(candidateDestinationCoordinate+1).isTileOccupied() && this.pieceAlliance != pieceAlliance)
-//                        if(board.getTile(coordinateBehindAttackPiece).getPiece().getPieceAlliance() != this.pieceAlliance){
-
-
-                        //Alliance alliancePieceUnderAttack =
-
-
-//                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
-//                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-                        //if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
-                        //    legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
-                        // }
                         break;
                     }
                 }
             }
         }
+
         return Collections.unmodifiableList(legalMoves);
     }
 
