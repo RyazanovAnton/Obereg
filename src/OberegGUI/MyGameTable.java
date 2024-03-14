@@ -25,7 +25,7 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 public class MyGameTable {
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
-    private Board chessBoard;
+    private Board gameboard;
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece humanMovedPiece;
@@ -49,7 +49,7 @@ public class MyGameTable {
         this.gameFrame.setLayout(new BorderLayout());
         //this.gameFrame.setLayout(null);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
-        this.chessBoard = Board.createStandardBoard();
+        this.gameboard = Board.createStandardBoard();
         this.boardPanel = new MyGameTable.BoardPanel();
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setVisible(true);
@@ -114,7 +114,7 @@ public class MyGameTable {
             super(new GridBagLayout());
             this.tileId = tileId;
             setPreferredSize(TILE_PANEL_DIMENSION);
-            assignTilePieceIcon(chessBoard);
+            assignTilePieceIcon(gameboard);
             assignTileColor();
 
             addMouseListener(new MouseListener() {
@@ -127,7 +127,7 @@ public class MyGameTable {
                         // System.out.println("RightClick!");
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTile == null) {                             //First click to choose Piece
-                            sourceTile = chessBoard.getTile(tileId);
+                            sourceTile = gameboard.getTile(tileId);
                             humanMovedPiece = sourceTile.getPiece();
                             if (humanMovedPiece == null) {
                                 sourceTile = null;
@@ -135,52 +135,72 @@ public class MyGameTable {
                         } else {
                             //Second click to choose destination
                             // System.out.println("Second Left Click");
-                            destinationTile = chessBoard.getTile((tileId));
-                            final Move move = Move.MoveFactory.createMove(chessBoard,
+                            destinationTile = gameboard.getTile((tileId));
+                            final Move move = Move.MoveFactory.createMove(gameboard,
                                     sourceTile.getTileCoordinate(),
                                     destinationTile.getTileCoordinate());
-                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+                            final MoveTransition transition = gameboard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
-                                chessBoard = transition.getTransitionBoard();
-                                for (int i = 1; i < BoardUtils.NUM_TILES; i++){
-                                    if (chessBoard.getTile(i).isTileOccupied()){
-                                        //System.out.println(chessBoard.getTile(i).isTileOccupied());
-                                        if(BoardUtils.isValidTileCoordinate(i-1)){
-                                            System.out.println(i);
-                                            System.out.println("left " + BoardUtils.isValidTileCoordinate(i-1));
-                                            if(chessBoard.isLeftAttackPosition(chessBoard.getTile(i))){
-                                                chessBoard.getTile(i).getPiece().setLeftopponent();
-                                                System.out.println(chessBoard.getTile(i).getPiece().setLeftopponent());
-                                            }
-
-
-                                            System.out.println();
-                                            System.out.println();
-
-                                        }
-                                    }
-                                }
-                                for (int i = 1; i < BoardUtils.NUM_TILES; i++){
-                                    if (chessBoard.getTile(i).isTileOccupied()) {
-                                        if(BoardUtils.isValidTileCoordinate(i-1)) {
-                                            if(chessBoard.getTile(i).getPiece().getLeftOpponent()){
-                                                System.out.println(i + ": FIND!!!");
-//                                                Tile.EmptyTile em1 = new Tile.EmptyTile(i);
-                                                //chessBoard.getTile(i).getPiece().removePiece();
-                                                //chessBoard.getTile(i).getPiece().getPieceAlliance();
-                                            }
-
-                                        }
-                                    }
-                                }
+                                gameboard = transition.getTransitionBoard();
                                 //moveLog.addMove(move);
                             }
+
+                            for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+                                if (gameboard.getTile(i).isTileOccupied()){
+                                    if(BoardUtils.isValidTileCoordinate(i-BoardUtils.NEXT_ON_RAW) &&
+                                            BoardUtils.isValidTileCoordinate(i+BoardUtils.NEXT_ON_RAW)){
+                                        if(gameboard.isEnemyOnTheLeft(gameboard.getTile(i)) &&
+                                                gameboard.isEnemyOnTheRight(gameboard.getTile(i))){
+                                            gameboard.getTile(i).getPiece().setHorizontalEnemies();
+                                            System.out.println(i);
+                                            System.out.println(gameboard.getTile(i).getPiece().setHorizontalEnemies());
+                                        }
+                                    }
+                                    if(BoardUtils.isValidTileCoordinate(i-BoardUtils.NEXT_ON_COLUMN) &&
+                                            BoardUtils.isValidTileCoordinate(i+BoardUtils.NEXT_ON_COLUMN)){
+                                        if(gameboard.isEnemyOnTheTop(gameboard.getTile(i)) &&
+                                                gameboard.isEnemyOnTheBottom(gameboard.getTile(i))){
+                                            gameboard.getTile(i).getPiece().setVerticalEnemies();
+                                            System.out.println(i);
+                                            System.out.println(gameboard.getTile(i).getPiece().setVerticalEnemies());
+                                        }
+
+                                    }
+                                }
+                            }
+                            for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+                                if (gameboard.getTile(i).isTileOccupied()) {
+                                    if(gameboard.getTile(i).getPiece().getHorizontalEnemies()){
+                                        System.out.println(i + ": Find horizontal enemies!!!");
+                                        Board.Builder builder = new Board.Builder();
+                                        for (final Piece piece : gameboard.currentPlayer().getActivePieces()) {
+                                            builder.setPiece(piece);
+                                        }
+                                        for (final Piece piece : gameboard.currentPlayer().getOpponent().getActivePieces()) {
+                                            builder.setPiece(piece);
+                                        }
+
+                                        builder.delPiece(i);
+                                        builder.setMoveMaker(gameboard.currentPlayer().getAlliance());
+                                        gameboard = builder.build();
+                                        break;
+
+
+
+                                    }
+                                    if(gameboard.getTile(i).getPiece().getVerticalEnemies()){
+
+                                        System.out.println(i + ": Find vertical enemies!!!");
+                                    }
+                                }
+                            }
+
                             sourceTile = null;
                             destinationTile = null;
                             humanMovedPiece = null;
 
                         }
-                        boardPanel.drawBoard(chessBoard);
+                        boardPanel.drawBoard(gameboard);
 
 
 //                        SwingUtilities.invokeLater(new Runnable() {

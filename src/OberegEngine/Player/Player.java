@@ -74,12 +74,7 @@ public abstract class Player {
             return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
         final Board transmitonBoard = move.execute();
-//        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transmitonBoard.currentPlayer().
-//                        getOpponent().getPlayerKing().getPiecePosition(),
-//                transmitonBoard.currentPlayer().getLegalMoves());
-//        if(!kingAttacks.isEmpty()){
-//            return new MoveTransition(this.board, move, MoveStatus.LEAVE_PLAYER_IN_CHECK);
-//        }
+
         return new MoveTransition(transmitonBoard, move, MoveStatus.DONE);
     }
 

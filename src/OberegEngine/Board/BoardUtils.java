@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class BoardUtils {
 
+    //public static final int[] FIRST_COLUMN2 =
+
     public static final boolean[] FIRST_COLUMN = initColumn(0);
     public static final boolean[] SECOND_COLUMN = initColumn(1);
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
@@ -27,6 +29,8 @@ public class BoardUtils {
 
     public static final int NUM_TILES = 81;
     public static final int NUM_TILES_PER_ROW = 9;
+    public static final int NEXT_ON_RAW = 1;
+    public static final int NEXT_ON_COLUMN = 9;
     private static boolean[] initColumn(int columnNumber){
         final boolean[] column = new boolean[NUM_TILES];
         do{

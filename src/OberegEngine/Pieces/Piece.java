@@ -2,7 +2,6 @@ package OberegEngine.Pieces;
 
 import OberegEngine.Alliance;
 import OberegEngine.Board.Board;
-import OberegEngine.Board.BoardUtils;
 import OberegEngine.Board.Move;
 
 import java.util.Collection;
@@ -14,8 +13,9 @@ public abstract class Piece {
     protected final Alliance pieceAlliance;
 //    protected final boolean isFirstMove;
     //private final int cashedHashCode;
-    private  int horizontalCount;
-    private boolean leftOpponent;
+    private boolean horizontalEnemies;
+    private boolean verticalEnemies;
+
 
 
     Piece(final PieceType pieceType,
@@ -81,12 +81,21 @@ public abstract class Piece {
     public abstract Collection<Move> calculateLegalMoves(final Board board);
     public abstract Piece movePiece(Move move);
 
-    public boolean setLeftopponent() {
-        return this.leftOpponent = true;
+    public boolean setHorizontalEnemies() {
+        return this.horizontalEnemies = true;
     }
-    public boolean getLeftOpponent(){
-        return this.leftOpponent;
+
+    public boolean getHorizontalEnemies(){
+        return this.horizontalEnemies;
     }
+
+    public boolean setVerticalEnemies() {
+        return this.verticalEnemies = true;
+    }
+    public boolean getVerticalEnemies(){
+        return this.verticalEnemies;
+    }
+
 
 //    public Piece removePiece() {
 //        return null;

@@ -78,14 +78,111 @@ public abstract class Move {
                 builder.setPiece(piece);
             }
         }
-        for (final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()){
-            builder.setPiece(piece);
-        }
         //перемещение фигуры
         builder.setPiece(this.movedPiece.movePiece(this));
+
+
+//        for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+//            if (this.board.getTile(i).isTileOccupied()){
+//                if(BoardUtils.isValidTileCoordinate(i-BoardUtils.NEXT_ON_RAW) &&
+//                        BoardUtils.isValidTileCoordinate(i+BoardUtils.NEXT_ON_RAW)){
+//                    if(this.board.isEnemyOnTheLeft(this.board.getTile(i)) &&
+//                            this.board.isEnemyOnTheRight(this.board.getTile(i))){
+//                        this.board.getTile(i).getPiece().setHorizontalEnemies();
+//                        System.out.println(i);
+//                        System.out.println(this.board.getTile(i).getPiece().setHorizontalEnemies());
+//                    }
+//                }
+//                if(BoardUtils.isValidTileCoordinate(i-BoardUtils.NEXT_ON_COLUMN) &&
+//                        BoardUtils.isValidTileCoordinate(i+BoardUtils.NEXT_ON_COLUMN)){
+//                    if(this.board.isEnemyOnTheTop(this.board.getTile(i)) &&
+//                            this.board.isEnemyOnTheBottom(this.board.getTile(i))){
+//                        this.board.getTile(i).getPiece().setVerticalEnemies();
+//                        System.out.println(i);
+//                        System.out.println(this.board.getTile(i).getPiece().setVerticalEnemies());
+//                    }
+//                }
+//            }
+//        }
+//        for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+//            if (this.board.getTile(i).isTileOccupied()) {
+//                if(this.board.getTile(i).getPiece().getHorizontalEnemies()){
+//                    // final MoveTransition deltrans = chessBoard.currentPlayer().makeMove(move);
+//
+//
+//
+//                    System.out.println(i + ": Find horizontal enemies!!!");
+//                }
+//                if(this.board.getTile(i).getPiece().getVerticalEnemies()){
+//
+//                    System.out.println(i + ": Find vertical enemies!!!");
+//                }
+//            }
+//        }
+
+//
+
+
+
+        for (Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()){
+            if(!(piece.getVerticalEnemies() || piece.getHorizontalEnemies())){
+                builder.setPiece(piece);
+            }
+//
+//            if(BoardUtils.isValidTileCoordinate(piece.getPiecePosition()-BoardUtils.NEXT_ON_RAW) &&
+//            BoardUtils.isValidTileCoordinate(piece.getPiecePosition()+BoardUtils.NEXT_ON_RAW)){
+//                System.out.println("true");
+//                if(this.board.isEnemyOnTheLeft(this.board.getTile(piece.getPiecePosition())) &&
+//                        this.board.isEnemyOnTheRight(this.board.getTile(piece.getPiecePosition()))){
+//                    System.out.println("2nd true");
+//                    piece.setHorizontalEnemies();
+//                    System.out.println(piece.getPiecePosition());
+//                    System.out.println("Find horizontal enemies!!!" +
+//                            this.board.getTile(piece.getPiecePosition()).getPiece().setHorizontalEnemies());
+//                }
+//            }
+//            if(BoardUtils.isValidTileCoordinate(piece.getPiecePosition()-BoardUtils.NEXT_ON_COLUMN) &&
+//                    BoardUtils.isValidTileCoordinate(piece.getPiecePosition()+BoardUtils.NEXT_ON_COLUMN)){
+//                if(this.board.isEnemyOnTheTop(this.board.getTile(piece.getPiecePosition())) &&
+//                        this.board.isEnemyOnTheBottom(this.board.getTile(piece.getPiecePosition()))){
+//                    piece.setVerticalEnemies();
+//                    System.out.println(piece.getPiecePosition());
+//                    System.out.println("Find horizontal enemies!!! " +
+//                            this.board.getTile(piece.getPiecePosition()).getPiece().setVerticalEnemies());
+//                }
+//
+//            }
+
+        }
+
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         return builder.build();
     }
+
+//
+//    public Board deliteAttackedPiece(){
+//        final Builder builder = new Builder();
+//        for(final Piece piece :this.currentPlayer().getActivePieces()){
+//            if(!(piece.getVerticalEnemies() || piece.getHorizontalEnemies())){
+//                builder.setPiece(piece);
+//            }
+//        }
+//        for (final Piece piece : this.currentPlayer().getOpponent().getActivePieces()){
+//            builder.setPiece(piece);
+//        }
+//        builder.setMoveMaker(this.currentPlayer().getOpponent().getAlliance());
+//        return builder.build();
+//    }
+
+
+
+
+
+
+
+
+
+
     public static class MajorAttackMove extends AttackMove{
         public MajorAttackMove(final Board board,
                                final Piece pieceMoved,

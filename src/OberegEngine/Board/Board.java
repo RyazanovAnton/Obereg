@@ -60,18 +60,42 @@ public class Board {
         return tile.toString();
     }
 
-    public boolean isLeftAttackPosition(Tile tile){
-        if(this.getTile(tile.tileCoordinate-1).isTileOccupied() &&
-                this.getTile(tile.tileCoordinate-1).getPiece().getPieceAlliance() !=
+
+
+
+
+    public boolean isEnemyOnTheLeft(Tile tile){
+        if(!BoardUtils.FIRST_COLUMN[tile.tileCoordinate]){
+            if(this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_RAW).isTileOccupied() &&
+                    this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_RAW).getPiece().getPieceAlliance() !=
+                            this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isEnemyOnTheRight(Tile tile){
+        if(!BoardUtils.NINTH_COLUMN[tile.tileCoordinate]){
+            if(this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_RAW).isTileOccupied() &&
+                    this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_RAW).getPiece().getPieceAlliance() !=
+                            this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isEnemyOnTheTop(Tile tile) {
+        if(this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_COLUMN).isTileOccupied() &&
+                this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_COLUMN).getPiece().getPieceAlliance() !=
                         this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
             //System.out.println();
             return true;
         }
         return false;
     }
-    public boolean isRightAttackPosition(Tile tile){
-        if(this.getTile(tile.tileCoordinate+1).isTileOccupied() &&
-                this.getTile(tile.tileCoordinate+1).getPiece().getPieceAlliance() !=
+    public boolean isEnemyOnTheBottom(Tile tile) {
+        if(this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_COLUMN).isTileOccupied() &&
+                this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_COLUMN).getPiece().getPieceAlliance() !=
                         this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
             //System.out.println();
             return true;
@@ -132,7 +156,7 @@ public class Board {
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 75));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 76));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 77));
-       // builder.setPiece(new King(Alliance.VIKINGS, 77));
+       builder.setPiece(new King(Alliance.VIKINGS, 77));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 7));
         // White Layout
         builder.setPiece(new King(Alliance.SLAVS, 40));
@@ -159,6 +183,11 @@ public class Board {
         return Collections.unmodifiableList(allLegalMoves);
     }
 
+    public void delitePiece(int tileNumber) {
+        //this.getTile(tileNumber).getPiece() = null;
+    }
+
+
     public static class Builder{
 
         Map<Integer, Piece> boardConfig;
@@ -173,6 +202,12 @@ public class Board {
             this.boardConfig.put(piece.getPiecePosition(), piece);
             return this;
         }
+        public Builder delPiece(int key){
+            this.boardConfig.remove(key);
+            return this;
+        }
+
+
         public Builder setMoveMaker(final Alliance nextMoveMaker){
             this.nextMoveMaker = nextMoveMaker;
             return this;
