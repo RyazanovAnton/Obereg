@@ -58,29 +58,9 @@ public class MyGameTable {
         this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.EAST);
-        //this.gameFrame.add(this.boardPanel);
-
-
     }
-
-
-//    public void show() {
-//        MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
-//    }
-//    public static MyGameTable get() {
-//        // TODO INSTANCE == SINGLETON???
-//        return INSTANCE;
-//    }
-//    private BoardPanel getBoardPanel() {
-//        return this.boardPanel;
-//    }
-//    private Board getGameBoard() {
-//        return this.chessBoard;
-//    }
-
     private class BoardPanel extends JPanel {
         final List<TilePanel> boardTiles;
-
         BoardPanel() {
             super(new GridLayout(9, 9));
             this.boardTiles = new ArrayList<>();
@@ -92,8 +72,6 @@ public class MyGameTable {
             setPreferredSize(BOARD_PANEL_DIMENSION);
             validate();
         }
-
-
         public void drawBoard(final Board board) {
             removeAll();
             for (final TilePanel tilePanel : boardTiles) {
@@ -104,10 +82,8 @@ public class MyGameTable {
             repaint();
         }
     }
-
     private class TilePanel extends JPanel {
         private final int tileId;
-
         TilePanel(final MyGameTable.BoardPanel boardPanel,
                   final int tileId) {
             super(new GridBagLayout());
@@ -115,7 +91,6 @@ public class MyGameTable {
             setPreferredSize(TILE_PANEL_DIMENSION);
             assignTilePieceIcon(gameboard);
             assignTileColor();
-
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(final MouseEvent e) {
@@ -123,7 +98,6 @@ public class MyGameTable {
                         sourceTile = null;
                         destinationTile = null;
                         humanMovedPiece = null;
-                        // System.out.println("RightClick!");
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTile == null) {                             //First click to choose Piece
                             sourceTile = gameboard.getTile(tileId);
@@ -132,8 +106,6 @@ public class MyGameTable {
                                 sourceTile = null;
                             }
                         } else {
-                            //Second click to choose destination
-                            // System.out.println("Second Left Click");
                             destinationTile = gameboard.getTile((tileId));
                             final Move move = Move.MoveFactory.createMove(gameboard,
                                     sourceTile.getTileCoordinate(),
@@ -141,93 +113,33 @@ public class MyGameTable {
                             final MoveTransition transition = gameboard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 gameboard = transition.getTransitionBoard();
-                                //System.out.println(gameboard.kingIsAlive());
-                                //moveLog.addMove(move);
+                                gameboard.searchEnemies();
+                                gameboard = transition.deleteCapturedEnemies(gameboard);
                             }
-
-                            for (int i = 1; i < BoardUtils.NUM_TILES; i++) {
-                                if (gameboard.getTile(i).isTileOccupied()) {
-                                    if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_RAW) &&
-                                            BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_RAW)) {
-                                        if (gameboard.isEnemyOnTheLeft(gameboard.getTile(i)) &&
-                                                gameboard.isEnemyOnTheRight(gameboard.getTile(i))) {
-                                            gameboard.getTile(i).getPiece().setHorizontalEnemies();
-                                            System.out.println(i);
-                                            System.out.println(gameboard.getTile(i).getPiece().setHorizontalEnemies());
-                                        }
-                                    }
-                                    if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_COLUMN) &&
-                                            BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_COLUMN)) {
-                                        if (gameboard.isEnemyOnTheTop(gameboard.getTile(i)) &&
-                                                gameboard.isEnemyOnTheBottom(gameboard.getTile(i))) {
-                                            gameboard.getTile(i).getPiece().setVerticalEnemies();
-                                            System.out.println(i);
-                                            System.out.println(gameboard.getTile(i).getPiece().setVerticalEnemies());
-                                        }
-
-                                    }
-                                }
-                            }
-
-
-                            for (int i = 1; i < BoardUtils.NUM_TILES; i++) {
-                                if (gameboard.getTile(i).isTileOccupied()) {
-                                    if (gameboard.getTile(i).getPiece().getHorizontalEnemies() ||
-                                            gameboard.getTile(i).getPiece().getVerticalEnemies()) {
-                                        //System.out.println(i + ": Find horizontal enemies!!!");
-                                        Board.Builder builder = new Board.Builder();
-                                        for (final Piece piece : gameboard.currentPlayer().getActivePieces()) {
-                                            builder.setPiece(piece);
-                                        }
-                                        for (final Piece piece : gameboard.currentPlayer().getOpponent().getActivePieces()) {
-                                            builder.setPiece(piece);
-                                        }
-
-                                        builder.delPiece(i);
-                                        builder.setMoveMaker(gameboard.currentPlayer().getAlliance());
-                                        gameboard = builder.build();
-                                        takenPiecesPanel.updateCounts(gameboard);
-                                        takenPiecesPanel.checkWinCondition(gameboard);
-                                        break;
-                                    }
-                                }
-                            }
-
                             sourceTile = null;
                             destinationTile = null;
                             humanMovedPiece = null;
-
                         }
+                        takenPiecesPanel.updateCounts(gameboard);
                         takenPiecesPanel.checkWinCondition(gameboard);
                         boardPanel.drawBoard(gameboard);
                     }
-
-
                 }
-
                 @Override
                 public void mousePressed(final MouseEvent e) {
-
                 }
-
                 @Override
                 public void mouseReleased(final MouseEvent e) {
-
                 }
-
                 @Override
                 public void mouseEntered(final MouseEvent e) {
-
                 }
-
                 @Override
                 public void mouseExited(final MouseEvent e) {
-
                 }
             });
             validate();
         }
-
         public void drawTile(final Board board) {
             assignTileColor();
             assignTilePieceIcon(board);
@@ -235,44 +147,40 @@ public class MyGameTable {
             validate();
             repaint();
         }
-
         private void assignTilePieceIcon(final Board board) {
             this.removeAll();
-            if (board.getTile(this.tileId).isTileOccupied()) {
-                try {
-                    final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath +
-                            board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0, 1) +
-                            board.getTile(this.tileId).getPiece().toString() + ".png"));
-                    add(new JLabel(new ImageIcon(image)));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-//                if(board.getTile(this.tileId).getPiece().getPieceAlliance().isVikings()){
-//                    try {
-//                        ImageIcon image = new ImageIcon(ImageIO.read(new File("art/pieces/plain/vikings.png")));
-//                        add(new JLabel(image, JLabel.CENTER));
-//
-//
-////                        final BufferedImage image = ImageIO.read(new File("art/pieces/plain/vikings.png"));
-////                        add(new JLabel(new ImageIcon(image, JLabel.CENTER)));
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                } else if(board.getTile(this.tileId).getPiece().getPieceAlliance().isSlavs()){
-//                    try {
-//                        final BufferedImage image = ImageIO.read(new File("art/pieces/plain/slavs.png"));
-//                        add(new JLabel(new ImageIcon(image)));
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//
-//
-//
-//            }
-        }
+                   if (board.getTile(this.tileId).isTileOccupied()) {
+                      if (board.getTile(this.tileId).getPiece().getPieceAlliance().isSlavs()){
+                          if(board.getTile(this.tileId).getPiece().getPieceType().isKing()){
+                              try {
+                                  final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath +
+                                          "king.png"));
+                                  add(new JLabel(new ImageIcon(image)));
+                              } catch (IOException e) {
+                                  throw new RuntimeException(e);
+                              }
+                          } else {
+                              try {
+                                  final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath +
+                                          "slav.png"));
+                                  add(new JLabel(new ImageIcon(image)));
+                              } catch (IOException e) {
+                                  throw new RuntimeException(e);
+                              }
+                          }
+                       }
+                       if (board.getTile(this.tileId).getPiece().getPieceAlliance().isVikings()) {
+                           try {
+                               final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath +
+                                       "viking.png"));
+                               add(new JLabel(new ImageIcon(image)));
+                           } catch (IOException e) {
+                               throw new RuntimeException(e);
+                           }
+                       }
 
+            }
+        }
         private void highLightLegals(final Board board) {
             if (highLightLegalMoves) {
                 for (final Move move : pieceLegalMoves(board)) {
@@ -280,9 +188,6 @@ public class MyGameTable {
                         try {
                             ImageIcon image = new ImageIcon(ImageIO.read(new File("art/misc/highlighter.png")));
                             add(new JLabel(image, JLabel.CENTER));
-
-//                            ImageIcon image = new ImageIcon(ImageIO.read(new File("art/misc/highlighter.png")));
-//                            add(new JLabel(image, JLabel.CENTER));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -290,94 +195,17 @@ public class MyGameTable {
                 }
             }
         }
-
         private Collection<Move> pieceLegalMoves(final Board board) {
             if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance()) {
                 return humanMovedPiece.calculateLegalMoves(board);
             }
             return Collections.emptyList();
         }
-
-
         private void assignTileColor() {
             this.setBackground(darkTileColor);
             this.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-
         }
 
-    }
-
-    public class TakenPiecesPanel extends JLabel {
-        private JLabel jlSlavsTeam;
-        private JLabel jlVikingTeam;
-        private JLabel jlSlavsTeamCount;
-        private JLabel jlVikingTeamCount;
-        private JLabel jlEndGameLabel;
-
-        private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(300, 557);
-
-        private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
-
-        //        public int countOfVikingWarriors;
-//        public int countOfSlavsWarriors;
-        public boolean slavsKing = false;
-
-        private TakenPiecesPanel(Board board) {
-            this.setBorder(PANEL_BORDER);
-            this.setPreferredSize(TAKEN_PIECES_DIMENSION);
-            jlSlavsTeam = new JLabel("Count of Slavs warriors: ");
-            jlSlavsTeam.setBounds(10, 10, 150, 30);
-            this.add(jlSlavsTeam);
-            jlVikingTeam = new JLabel("Count of Viking warriors: ");
-            jlVikingTeam.setBounds(10, 100, 150, 30);
-            this.add(jlVikingTeam);
-            jlSlavsTeamCount = new JLabel(String.valueOf(gameboard.slavPlayer().getActivePieces().size()));
-            jlSlavsTeamCount.setBounds(160, 10, 100, 30);
-            this.add(jlSlavsTeamCount);
-            jlVikingTeamCount = new JLabel(String.valueOf(gameboard.vikingPlayer().getActivePieces().size()));
-            jlVikingTeamCount.setBounds(160, 100, 100, 30);
-            this.add(jlVikingTeamCount);
-        }
-
-        public void updateCounts(Board board) {
-            this.jlSlavsTeamCount.setText(String.valueOf(board.slavPlayer().getActivePieces().size()));
-            this.jlVikingTeamCount.setText(String.valueOf(board.vikingPlayer().getActivePieces().size()));
-        }
-
-        public void checkWinCondition(Board board) {
-
-            if (board.slavPlayer().getActivePieces().size() == 0 ||
-                    board.vikingPlayer().getActivePieces().size() == 0) {
-                jlEndGameLabel = new JLabel();
-                jlEndGameLabel.setBounds(100, 200, 150, 30);
-                this.add(jlEndGameLabel);
-                if (board.vikingPlayer().getActivePieces().size() == 0) {
-                    jlEndGameLabel.setText("Slavs win!!!");
-                }
-                if (board.slavPlayer().getActivePieces().size() == 0) {
-                    jlEndGameLabel.setText("Vikings win!!!");
-                }
-            } else if (!board.kingIsAlive()) {
-                jlEndGameLabel = new JLabel();
-                this.add(jlEndGameLabel);
-                jlEndGameLabel.setBounds(100, 200, 150, 30);
-                jlEndGameLabel.setText("Vikings win!!!");
-                //System.out.println("WIN");
-            }
-            else if ((board.getTile(0).isTileOccupied() &&
-                    board.getTile(0).getPiece().getPieceType().isKing()) ||
-                    (board.getTile(8).isTileOccupied() &&
-                            board.getTile(8).getPiece().getPieceType().isKing()) ||
-                    (board.getTile(72).isTileOccupied() &&
-                            board.getTile(72).getPiece().getPieceType().isKing()) ||
-                    (board.getTile(80).isTileOccupied() &&
-                            board.getTile(80).getPiece().getPieceType().isKing())) {
-                jlEndGameLabel = new JLabel();
-                this.add(jlEndGameLabel);
-                jlEndGameLabel.setBounds(100, 200, 150, 30);
-                jlEndGameLabel.setText("Slavs win!!!");
-            }
-        }
     }
 }
 

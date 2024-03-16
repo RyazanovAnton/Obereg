@@ -192,6 +192,29 @@ public class Board {
         return Collections.unmodifiableList(allLegalMoves);
     }
 
+    public void searchEnemies() {
+        for (int i = 1; i < BoardUtils.NUM_TILES; i++) {
+            if (this.getTile(i).isTileOccupied()) {
+                if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_RAW) &&
+                        BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_RAW)) {
+                    if (this.isEnemyOnTheLeft(this.getTile(i)) &&
+                            this.isEnemyOnTheRight(this.getTile(i))) {
+                        this.getTile(i).getPiece().setHorizontalEnemies();
+                    }
+                }
+                if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_COLUMN) &&
+                        BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_COLUMN)) {
+                    if (this.isEnemyOnTheTop(this.getTile(i)) &&
+                            this.isEnemyOnTheBottom(this.getTile(i))) {
+                        this.getTile(i).getPiece().setVerticalEnemies();
+                        System.out.println(i);
+                        System.out.println(this.getTile(i).getPiece().setVerticalEnemies());
+                    }
+                }
+            }
+        }
+    }
+
 
 
     public static class Builder{
