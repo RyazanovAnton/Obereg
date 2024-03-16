@@ -9,6 +9,7 @@ import OberegEngine.Player.MoveTransition;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -30,9 +31,10 @@ public class MyGameTable {
     private Tile destinationTile;
     private Piece humanMovedPiece;
     private boolean highLightLegalMoves = true;
+    private final TakenPiecesPanel takenPiecesPanel;
 
 
-    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(535, 557);
+    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(835, 557);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(535, 537);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(57, 57);
     private static String defaultPieceImagesPath = "art/pieces/plain/";
@@ -54,6 +56,8 @@ public class MyGameTable {
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setVisible(true);
         this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
+        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.EAST);
         //this.gameFrame.add(this.boardPanel);
 
 
@@ -142,6 +146,7 @@ public class MyGameTable {
                             final MoveTransition transition = gameboard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 gameboard = transition.getTransitionBoard();
+                                //System.out.println(gameboard.kingIsAlive());
                                 //moveLog.addMove(move);
                             }
 
@@ -168,10 +173,15 @@ public class MyGameTable {
                                     }
                                 }
                             }
+
+
+
+
                             for (int i = 1; i < BoardUtils.NUM_TILES; i++){
                                 if (gameboard.getTile(i).isTileOccupied()) {
-                                    if(gameboard.getTile(i).getPiece().getHorizontalEnemies()){
-                                        System.out.println(i + ": Find horizontal enemies!!!");
+                                    if(gameboard.getTile(i).getPiece().getHorizontalEnemies() ||
+                                    gameboard.getTile(i).getPiece().getVerticalEnemies()){
+                                        //System.out.println(i + ": Find horizontal enemies!!!");
                                         Board.Builder builder = new Board.Builder();
                                         for (final Piece piece : gameboard.currentPlayer().getActivePieces()) {
                                             builder.setPiece(piece);
@@ -183,6 +193,9 @@ public class MyGameTable {
                                         builder.delPiece(i);
                                         builder.setMoveMaker(gameboard.currentPlayer().getAlliance());
                                         gameboard = builder.build();
+                                        takenPiecesPanel.updateCounts(gameboard);
+
+                                        takenPiecesPanel.checkWinCondition(gameboard);
                                         break;
 
 
@@ -322,7 +335,72 @@ public class MyGameTable {
 
         }
 
+        public class TakenPiecesPanel extends JLabel{
+        private JLabel jlSlavsTeam;
+        private JLabel jlVikingTeam;
+        private JLabel jlSlavsTeamCount;
+        private JLabel jlVikingTeamCount;
+        private JLabel jlEndGameLabel;
+        private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(300,557);
+
+        private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
+
+//        public int countOfVikingWarriors;
+//        public int countOfSlavsWarriors;
+            public boolean slavsKing = false;
+
+        private TakenPiecesPanel(Board board){
+            this.setBorder(PANEL_BORDER);
+            this.setPreferredSize(TAKEN_PIECES_DIMENSION);
+            jlSlavsTeam = new JLabel("Count of Slavs warriors: ");
+            jlSlavsTeam.setBounds(10, 10, 150, 30);
+            this.add(jlSlavsTeam);
+            jlVikingTeam = new JLabel("Count of Viking warriors: ");
+            jlVikingTeam.setBounds(10,100,150,30);
+            this.add(jlVikingTeam);
+            jlSlavsTeamCount = new JLabel(String.valueOf(gameboard.slavPlayer().getActivePieces().size()));
+            jlSlavsTeamCount.setBounds(160,10,100,30);
+            this.add(jlSlavsTeamCount);
+            jlVikingTeamCount = new JLabel(String.valueOf(gameboard.vikingPlayer().getActivePieces().size()));
+            jlVikingTeamCount.setBounds(160,100,100,30);
+            this.add(jlVikingTeamCount);
+        }
+        public void updateCounts(Board board){
+            this.jlSlavsTeamCount.setText(String.valueOf(board.slavPlayer().getActivePieces().size()));
+            this.jlVikingTeamCount.setText(String.valueOf(board.vikingPlayer().getActivePieces().size()));
+        }
+
+        public void checkWinCondition(Board board){
+            if(!board.kingIsAlive()){
+                jlEndGameLabel = new JLabel();
+                this.add(jlEndGameLabel);
+                jlEndGameLabel.setBounds(100, 200, 150, 30);
+                jlEndGameLabel.setText("Vikings win!!!");
+                //System.out.println("WIN");
+            }
+            else if(board.slavPlayer().getActivePieces().size() == 0 ||
+                    board.vikingPlayer().getActivePieces().size() ==0){
+                jlEndGameLabel = new JLabel();
+                jlEndGameLabel.setBounds(100, 200, 150, 30);
+                this.add(jlEndGameLabel);
+                if(board.vikingPlayer().getActivePieces().size() == 0){
+                    jlEndGameLabel.setText("Slavs win!!!");
+                }
+                if(board.slavPlayer().getActivePieces().size() == 0){
+                    jlEndGameLabel.setText("Vikings win!!!");
+                }
+            }
+
+
+
+
+        }
+
+        }
+
     }
+
+
 
 
 

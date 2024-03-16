@@ -12,44 +12,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class SlavPlayer extends Player {
-    protected final King playerKing;
-    private final boolean isInCheck;
+//    protected final King playerKing;
+//    private final boolean isInCheck;
     public SlavPlayer(final Board board,
                        final Collection<Move> whiteStandardLegalMoves,
                        final Collection<Move> blackStandardLegalMoves){
         super(board, whiteStandardLegalMoves, blackStandardLegalMoves);
-        this.playerKing = establishKing();
-        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), blackStandardLegalMoves).isEmpty();
+//        this.playerKing = establishKing();
+//        this.isInCheck = !calculateAttacksOnTile(this.playerKing.getPiecePosition(), blackStandardLegalMoves).isEmpty();
     }
-        public King getPlayerKing(){
-        return this.playerKing;
-    }
-    public boolean isInCheck(){
-        return this.isInCheck;
-    }
-
-    public boolean isInCheckMate(){
-        return this.isInCheck && !hasEscapeMoves();
-    }
-   //     TODO!!!
- //       Не можешь сделать такой ход, что король не попадет под контроль
-    public boolean isInStaleMate(){
-        return !this.isInCheck && !hasEscapeMoves();
-    }
-    private King establishKing() {
-        for(final Piece piece : getActivePieces()){
-            if(piece.getPieceType().isKing()){
-                return (King) piece;
-            }
-        }
-        throw new RuntimeException("Shouldn't reach here! not a valid board!!!");
-    }
-
     @Override
     public Collection<Piece> getActivePieces() {
         return this.board.getWhitePieces();
     }
-
     @Override
     public Alliance getAlliance() {
         return Alliance.SLAVS;
@@ -59,6 +34,33 @@ public class SlavPlayer extends Player {
     public Player getOpponent() {
         return this.board.vikingPlayer();
     }
+
+
+//        public King getPlayerKing(){
+//        return this.playerKing;
+//    }
+//    public boolean isInCheck(){
+//        return this.isInCheck;
+//    }
+//
+//    public boolean isInCheckMate(){
+//        return this.isInCheck && !hasEscapeMoves();
+//    }
+//   //     TODO!!!
+// //       Не можешь сделать такой ход, что король не попадет под контроль
+//    public boolean isInStaleMate(){
+//        return !this.isInCheck && !hasEscapeMoves();
+//    }
+//    private King establishKing() {
+//        for(final Piece piece : getActivePieces()){
+//            if(piece.getPieceType().isKing()){
+//                return (King) piece;
+//            }
+//        }
+//        throw new RuntimeException("Shouldn't reach here! not a valid board!!!");
+//    }
+
+
 
 //    @Override
 //    public MoveTransition makeMove(final Move move){

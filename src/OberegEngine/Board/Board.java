@@ -103,6 +103,15 @@ public class Board {
         return false;
     }
 
+    public boolean kingIsAlive() {
+        for(Piece piece : this.slavPlayer().getActivePieces()){
+            if(piece.getPieceType().isKing()){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
         final List<Move> legalMoves = new ArrayList<>();
@@ -147,21 +156,21 @@ public class Board {
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 27));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 36));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 37));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 45));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 45));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 35));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 43));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 44));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 53));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 53));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 67));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 75));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 76));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 77));
-       builder.setPiece(new King(Alliance.VIKINGS, 77));
+       //builder.setPiece(new King(Alliance.VIKINGS, 77));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 7));
         // White Layout
         builder.setPiece(new King(Alliance.SLAVS, 40));
         builder.setPiece(new Rook(Alliance.SLAVS, 22));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 31));
+        builder.setPiece(new Rook(Alliance.SLAVS, 31));
 //        builder.setPiece(new Rook(Alliance.SLAVS, 49));
 //        builder.setPiece(new Rook(Alliance.SLAVS, 58));
 //        builder.setPiece(new Rook(Alliance.SLAVS, 38));
@@ -183,9 +192,6 @@ public class Board {
         return Collections.unmodifiableList(allLegalMoves);
     }
 
-    public void delitePiece(int tileNumber) {
-        //this.getTile(tileNumber).getPiece() = null;
-    }
 
 
     public static class Builder{
