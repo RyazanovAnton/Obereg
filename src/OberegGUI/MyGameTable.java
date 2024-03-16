@@ -64,12 +64,6 @@ public class MyGameTable {
     }
 
 
-
-
-
-
-
-
 //    public void show() {
 //        MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
 //    }
@@ -110,6 +104,7 @@ public class MyGameTable {
             repaint();
         }
     }
+
     private class TilePanel extends JPanel {
         private final int tileId;
 
@@ -150,21 +145,21 @@ public class MyGameTable {
                                 //moveLog.addMove(move);
                             }
 
-                            for (int i = 1; i < BoardUtils.NUM_TILES; i++){
-                                if (gameboard.getTile(i).isTileOccupied()){
-                                    if(BoardUtils.isValidTileCoordinate(i-BoardUtils.NEXT_ON_RAW) &&
-                                            BoardUtils.isValidTileCoordinate(i+BoardUtils.NEXT_ON_RAW)){
-                                        if(gameboard.isEnemyOnTheLeft(gameboard.getTile(i)) &&
-                                                gameboard.isEnemyOnTheRight(gameboard.getTile(i))){
+                            for (int i = 1; i < BoardUtils.NUM_TILES; i++) {
+                                if (gameboard.getTile(i).isTileOccupied()) {
+                                    if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_RAW) &&
+                                            BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_RAW)) {
+                                        if (gameboard.isEnemyOnTheLeft(gameboard.getTile(i)) &&
+                                                gameboard.isEnemyOnTheRight(gameboard.getTile(i))) {
                                             gameboard.getTile(i).getPiece().setHorizontalEnemies();
                                             System.out.println(i);
                                             System.out.println(gameboard.getTile(i).getPiece().setHorizontalEnemies());
                                         }
                                     }
-                                    if(BoardUtils.isValidTileCoordinate(i-BoardUtils.NEXT_ON_COLUMN) &&
-                                            BoardUtils.isValidTileCoordinate(i+BoardUtils.NEXT_ON_COLUMN)){
-                                        if(gameboard.isEnemyOnTheTop(gameboard.getTile(i)) &&
-                                                gameboard.isEnemyOnTheBottom(gameboard.getTile(i))){
+                                    if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_COLUMN) &&
+                                            BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_COLUMN)) {
+                                        if (gameboard.isEnemyOnTheTop(gameboard.getTile(i)) &&
+                                                gameboard.isEnemyOnTheBottom(gameboard.getTile(i))) {
                                             gameboard.getTile(i).getPiece().setVerticalEnemies();
                                             System.out.println(i);
                                             System.out.println(gameboard.getTile(i).getPiece().setVerticalEnemies());
@@ -175,12 +170,10 @@ public class MyGameTable {
                             }
 
 
-
-
-                            for (int i = 1; i < BoardUtils.NUM_TILES; i++){
+                            for (int i = 1; i < BoardUtils.NUM_TILES; i++) {
                                 if (gameboard.getTile(i).isTileOccupied()) {
-                                    if(gameboard.getTile(i).getPiece().getHorizontalEnemies() ||
-                                    gameboard.getTile(i).getPiece().getVerticalEnemies()){
+                                    if (gameboard.getTile(i).getPiece().getHorizontalEnemies() ||
+                                            gameboard.getTile(i).getPiece().getVerticalEnemies()) {
                                         //System.out.println(i + ": Find horizontal enemies!!!");
                                         Board.Builder builder = new Board.Builder();
                                         for (final Piece piece : gameboard.currentPlayer().getActivePieces()) {
@@ -194,16 +187,8 @@ public class MyGameTable {
                                         builder.setMoveMaker(gameboard.currentPlayer().getAlliance());
                                         gameboard = builder.build();
                                         takenPiecesPanel.updateCounts(gameboard);
-
                                         takenPiecesPanel.checkWinCondition(gameboard);
                                         break;
-
-
-
-                                    }
-                                    if(gameboard.getTile(i).getPiece().getVerticalEnemies()){
-
-                                        System.out.println(i + ": Find vertical enemies!!!");
                                     }
                                 }
                             }
@@ -213,21 +198,8 @@ public class MyGameTable {
                             humanMovedPiece = null;
 
                         }
+                        takenPiecesPanel.checkWinCondition(gameboard);
                         boardPanel.drawBoard(gameboard);
-
-
-//                        SwingUtilities.invokeLater(new Runnable() {
-//                            @Override
-//                            public void run() {
-////                                gameHistoryPanel.redo(chessBoard, moveLog);
-////                                takenPiecesPanel.redo(moveLog);
-////                                if(gameSetup.isAIPlayer(chessBoard.currentPlayer())){
-////                                    Table.get().moveMadeUpdate(PlayerType.HUMAN);
-////                                }
-//                                boardPanel.drawBoard(chessBoard);
-//
-//                            }
-//                        });
                     }
 
 
@@ -331,74 +303,83 @@ public class MyGameTable {
             this.setBackground(darkTileColor);
             this.setBorder(BorderFactory.createLineBorder(Color.black, 1));
 
-            }
-
         }
 
-        public class TakenPiecesPanel extends JLabel{
+    }
+
+    public class TakenPiecesPanel extends JLabel {
         private JLabel jlSlavsTeam;
         private JLabel jlVikingTeam;
         private JLabel jlSlavsTeamCount;
         private JLabel jlVikingTeamCount;
         private JLabel jlEndGameLabel;
-        private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(300,557);
+
+        private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(300, 557);
 
         private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
 
-//        public int countOfVikingWarriors;
+        //        public int countOfVikingWarriors;
 //        public int countOfSlavsWarriors;
-            public boolean slavsKing = false;
+        public boolean slavsKing = false;
 
-        private TakenPiecesPanel(Board board){
+        private TakenPiecesPanel(Board board) {
             this.setBorder(PANEL_BORDER);
             this.setPreferredSize(TAKEN_PIECES_DIMENSION);
             jlSlavsTeam = new JLabel("Count of Slavs warriors: ");
             jlSlavsTeam.setBounds(10, 10, 150, 30);
             this.add(jlSlavsTeam);
             jlVikingTeam = new JLabel("Count of Viking warriors: ");
-            jlVikingTeam.setBounds(10,100,150,30);
+            jlVikingTeam.setBounds(10, 100, 150, 30);
             this.add(jlVikingTeam);
             jlSlavsTeamCount = new JLabel(String.valueOf(gameboard.slavPlayer().getActivePieces().size()));
-            jlSlavsTeamCount.setBounds(160,10,100,30);
+            jlSlavsTeamCount.setBounds(160, 10, 100, 30);
             this.add(jlSlavsTeamCount);
             jlVikingTeamCount = new JLabel(String.valueOf(gameboard.vikingPlayer().getActivePieces().size()));
-            jlVikingTeamCount.setBounds(160,100,100,30);
+            jlVikingTeamCount.setBounds(160, 100, 100, 30);
             this.add(jlVikingTeamCount);
         }
-        public void updateCounts(Board board){
+
+        public void updateCounts(Board board) {
             this.jlSlavsTeamCount.setText(String.valueOf(board.slavPlayer().getActivePieces().size()));
             this.jlVikingTeamCount.setText(String.valueOf(board.vikingPlayer().getActivePieces().size()));
         }
 
-        public void checkWinCondition(Board board){
-            if(!board.kingIsAlive()){
+        public void checkWinCondition(Board board) {
+
+            if (board.slavPlayer().getActivePieces().size() == 0 ||
+                    board.vikingPlayer().getActivePieces().size() == 0) {
+                jlEndGameLabel = new JLabel();
+                jlEndGameLabel.setBounds(100, 200, 150, 30);
+                this.add(jlEndGameLabel);
+                if (board.vikingPlayer().getActivePieces().size() == 0) {
+                    jlEndGameLabel.setText("Slavs win!!!");
+                }
+                if (board.slavPlayer().getActivePieces().size() == 0) {
+                    jlEndGameLabel.setText("Vikings win!!!");
+                }
+            } else if (!board.kingIsAlive()) {
                 jlEndGameLabel = new JLabel();
                 this.add(jlEndGameLabel);
                 jlEndGameLabel.setBounds(100, 200, 150, 30);
                 jlEndGameLabel.setText("Vikings win!!!");
                 //System.out.println("WIN");
             }
-            else if(board.slavPlayer().getActivePieces().size() == 0 ||
-                    board.vikingPlayer().getActivePieces().size() ==0){
+            else if ((board.getTile(0).isTileOccupied() &&
+                    board.getTile(0).getPiece().getPieceType().isKing()) ||
+                    (board.getTile(8).isTileOccupied() &&
+                            board.getTile(8).getPiece().getPieceType().isKing()) ||
+                    (board.getTile(72).isTileOccupied() &&
+                            board.getTile(72).getPiece().getPieceType().isKing()) ||
+                    (board.getTile(80).isTileOccupied() &&
+                            board.getTile(80).getPiece().getPieceType().isKing())) {
                 jlEndGameLabel = new JLabel();
-                jlEndGameLabel.setBounds(100, 200, 150, 30);
                 this.add(jlEndGameLabel);
-                if(board.vikingPlayer().getActivePieces().size() == 0){
-                    jlEndGameLabel.setText("Slavs win!!!");
-                }
-                if(board.slavPlayer().getActivePieces().size() == 0){
-                    jlEndGameLabel.setText("Vikings win!!!");
-                }
+                jlEndGameLabel.setBounds(100, 200, 150, 30);
+                jlEndGameLabel.setText("Slavs win!!!");
             }
-
-
-
-
         }
-
-        }
-
     }
+}
 
 
 

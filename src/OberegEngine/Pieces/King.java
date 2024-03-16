@@ -30,21 +30,18 @@ public class King extends Piece {
             for(int i =0; i<MAXDISTANCE; i++){
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
                     if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
-                            isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)){
+                            isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset )){
                         break;
                     }
                     candidateDestinationCoordinate += candidateCoordinateOffset;
+                    if(BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate) &&
+                            board.getTile(candidateDestinationCoordinate).isTileOccupied()){
+                        break;
+                    }
                     if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
                         final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                         if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
                             legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-                        } else {
-                            final Piece pieceAtDestination = candidateDestinationTile.getPiece();
-                            final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
-                            if(this.pieceAlliance != pieceAlliance){            // если плитка занята фигурой противника
-                                legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
-                            }
-                            break;
                         }
                     }
                 }
@@ -61,11 +58,9 @@ public class King extends Piece {
         return PieceType.KING.toString();
     }
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || candidateOffset == -1 ||
-                candidateOffset == 7);
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -1);
     }
     private static boolean isNinthColumnExclusion(final  int currentPosition, final int candidateOffset){
-        return BoardUtils.NINTH_COLUMN[currentPosition]  && (candidateOffset == - 7|| candidateOffset == 1 ||
-                candidateOffset == 9);
+        return BoardUtils.NINTH_COLUMN[currentPosition]  && (candidateOffset == 1);
     }
 }

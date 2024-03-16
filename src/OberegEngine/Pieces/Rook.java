@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Rook extends Piece {
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -1, 1, 9};
+    private static final int MAXDISTANCE = 9;
 
     public Rook(final Alliance pieceAlliance, final int piecePosition) {
         super(PieceType.ROOK, piecePosition, pieceAlliance);
@@ -26,34 +27,26 @@ public class Rook extends Piece {
         final List<Move> legalMoves = new ArrayList<>();
         for (final int candidateCoordinateOffset : CANDIDATE_MOVE_VECTOR_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
-            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
-                        isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
-                    break;
-                }
-                candidateDestinationCoordinate += candidateCoordinateOffset;
+            for(int i =0; i<MAXDISTANCE; i++) {
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (!candidateDestinationTile.isTileOccupied()) {         // если плитка не занята
-                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
-                    } else {
-
-//                        if (board.getTile(candidateDestinationCoordinate + 1).isTileOccupied() &&
-//                                board.getTile(candidateDestinationCoordinate + 1).getPiece().getPieceAlliance() != this.pieceAlliance &&
-//                                board.getTile(candidateDestinationCoordinate + 2).isTileOccupied() &&
-//                                board.getTile(candidateDestinationCoordinate + 2).getPiece().getPieceAlliance() == this.pieceAlliance) {
-//
-//                            legalMoves.add(new MajorAttackMove(board,
-//                                    this, candidateDestinationCoordinate,
-//                                    board.getTile(candidateDestinationCoordinate + 1).getPiece()));
-//                            //board.getTile(candidateDestinationCoordinate)=new Tile.EmptyTile();
-//                        }
+                    if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
+                            isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
                         break;
+                    }
+                    candidateDestinationCoordinate += candidateCoordinateOffset;
+                    if(BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate) &&
+                            board.getTile(candidateDestinationCoordinate).isTileOccupied()){
+                        break;
+                    }
+                    if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
+                        final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
+                        if (!candidateDestinationTile.isTileOccupied()) {         // если плитка не занята
+                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                        }
                     }
                 }
             }
         }
-
         return Collections.unmodifiableList(legalMoves);
     }
 
