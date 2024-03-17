@@ -1,9 +1,9 @@
 package OberegEngine.Board;
 
-import OberegEngine.Alliance;
+import OberegEngine.Player.Alliance;
 import OberegEngine.Pieces.King;
 import OberegEngine.Pieces.Piece;
-import OberegEngine.Pieces.Rook;
+import OberegEngine.Pieces.Warrior;
 import OberegEngine.Player.Player;
 import OberegEngine.Player.SlavPlayer;
 import OberegEngine.Player.VikingPlayer;
@@ -21,45 +21,33 @@ public class Board {
         this.gameBoard = createGameBoard(builder);
         this.slavPieces = calculateActivePieces(this.gameBoard, Alliance.SLAVS);
         this.vikingPieces = calculateActivePieces(this.gameBoard, Alliance.VIKINGS);
-        final Collection<Move> whiteStandardLegalMoves = calculateLegalMoves(this.slavPieces);
-        final Collection<Move> blackStandardLegalMoves = calculateLegalMoves(this.vikingPieces);
-
-        this.slavPlayer = new SlavPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
-        this.vikingPlayer = new VikingPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
+        final Collection<Move> slavsStandardLegalMoves = calculateLegalMoves(this.slavPieces);
+        final Collection<Move> vikingStandardLegalMoves = calculateLegalMoves(this.vikingPieces);
+        this.slavPlayer = new SlavPlayer(this, slavsStandardLegalMoves);
+        this.vikingPlayer = new VikingPlayer(this, vikingStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.slavPlayer, this.vikingPlayer);
     }
-    @Override
-    public String toString(){
-        final StringBuilder builder = new StringBuilder();
-        for (int i =0; i<BoardUtils.NUM_TILES; i++){
-            final String tileText = this.gameBoard.get(i).toString();
-            builder.append(String.format("%3s", tileText));
-            if((i + 1) % BoardUtils.NUM_TILES_PER_ROW == 0) {
-                builder.append("\n");
-            }
-        }
-        return builder.toString();
-    }
+    // Получение доступа к фигурам Варягов
     public Player slavPlayer(){
         return this.slavPlayer;
     }
+    // Получение доступа к фигиурам Викингов
     public Player vikingPlayer(){
         return this.vikingPlayer;
     }
+    // Получение доступа к фигурам текущего игрока
     public Player currentPlayer(){
         return this.currentPlayer;
     }
-    public Collection<Piece> getBlackPieces(){
+    // Получение коллекции викингов
+    public Collection<Piece> getVikingPieces(){
         return this.vikingPieces;
     }
-    public Collection<Piece> getWhitePieces(){
+    // Получение коллекции варягов
+    public Collection<Piece> getSlavPieces(){
         return this.slavPieces;
     }
-
-
-
-
-
+    // Проврка наличия врагов слева
     public boolean isEnemyOnTheLeft(Tile tile){
         if(!BoardUtils.FIRST_COLUMN[tile.tileCoordinate]){
             if(this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_RAW).isTileOccupied() &&
@@ -70,6 +58,7 @@ public class Board {
         }
         return false;
     }
+    // Проврка наличия врагов справа
     public boolean isEnemyOnTheRight(Tile tile){
         if(!BoardUtils.NINTH_COLUMN[tile.tileCoordinate]){
             if(this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_RAW).isTileOccupied() &&
@@ -80,6 +69,7 @@ public class Board {
         }
         return false;
     }
+    // Проврка наличия врагов сверху
     public boolean isEnemyOnTheTop(Tile tile) {
         if(this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_COLUMN).isTileOccupied() &&
                 this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_COLUMN).getPiece().getPieceAlliance() !=
@@ -89,6 +79,7 @@ public class Board {
         }
         return false;
     }
+    // Проврка наличия врагов снизу
     public boolean isEnemyOnTheBottom(Tile tile) {
         if(this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_COLUMN).isTileOccupied() &&
                 this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_COLUMN).getPiece().getPieceAlliance() !=
@@ -98,7 +89,7 @@ public class Board {
         }
         return false;
     }
-
+    // Проверка короля
     public boolean kingIsAlive() {
         for(Piece piece : this.slavPlayer().getActivePieces()){
             if(piece.getPieceType().isKing()){
@@ -107,8 +98,7 @@ public class Board {
         }
         return false;
     }
-
-
+    // Создание коллекции допустимых ходов для альянса
     private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
         final List<Move> legalMoves = new ArrayList<>();
         for(final Piece piece : pieces){
@@ -116,7 +106,14 @@ public class Board {
         }
         return legalMoves;
     }
-
+    // Инкапсуляция - получение доступа к возможным ходам обоих альянсов
+    public Collection<Move> getAllLegalMoves(){
+        List<Move> allLegalMoves = new ArrayList<>();
+        allLegalMoves.addAll(this.slavPlayer.getLegalMoves());
+        allLegalMoves.addAll(this.vikingPlayer.getLegalMoves());
+        return Collections.unmodifiableList(allLegalMoves);
+    }
+    // Создание коллекции активных войнов на доске
     private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
         for(final Tile tile : gameBoard){
@@ -129,62 +126,54 @@ public class Board {
         }
         return Collections.unmodifiableList(activePieces);
     }
-
+    // Получение доступа к содержимому Тайла по его порядковому номеру
     public Tile getTile(final int tileCoordinate){
         return gameBoard.get(tileCoordinate);
     }
-
+    // Создание игрового поля из NUM_TILES (81) элемента
     private static List<Tile> createGameBoard(final Builder builder){
-        final List<Tile> tiles2 = new ArrayList<>();
+        final List<Tile> tiles = new ArrayList<>();
         for(int i =0; i< BoardUtils.NUM_TILES; i++) {
-            tiles2.add(Tile.createTile(i, builder.boardConfig.get(i)));
+            tiles.add(Tile.createTile(i, builder.boardConfig.get(i)));
         }
-        return Collections.unmodifiableList(tiles2);
+        return Collections.unmodifiableList(tiles);
     }
-
+    // Исходная расстановка + установка первого хода за викингами
     public static Board createStandardBoard(){
         final Builder builder = new Builder();
-        //black layout
-        builder.setPiece(new Rook(Alliance.VIKINGS, 3));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 4));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 5));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 13));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 27));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 36));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 37));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 45));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 35));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 43));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 44));
-        builder.setPiece(new Rook(Alliance.VIKINGS, 53));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 67));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 75));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 76));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 77));
-       //builder.setPiece(new King(Alliance.VIKINGS, 77));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 7));
-        // White Layout
+        // Команда викингов
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 3));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 4));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 5));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 13));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 27));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 36));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 37));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 45));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 35));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 43));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 44));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 53));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 67));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 75));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 76));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 77));
+        builder.setPiece(new Warrior(Alliance.VIKINGS, 77));
+        // Команда варягов
         builder.setPiece(new King(Alliance.SLAVS, 40));
-        builder.setPiece(new Rook(Alliance.SLAVS, 22));
-        builder.setPiece(new Rook(Alliance.SLAVS, 31));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 49));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 58));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 38));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 39));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 41));
-//        builder.setPiece(new Rook(Alliance.SLAVS, 42));
-
+        builder.setPiece(new Warrior(Alliance.SLAVS, 22));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 31));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 49));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 58));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 38));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 39));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 41));
+        builder.setPiece(new Warrior(Alliance.SLAVS, 42));
         // Викинги ходят первыми
         builder.setMoveMaker(Alliance.VIKINGS);
         return builder.build();
     }
-    public Collection<Move> getAllLegalMoves(){
-        List<Move> allLegalMoves = new ArrayList<>();
-        allLegalMoves.addAll(this.slavPlayer.getLegalMoves());
-        allLegalMoves.addAll(this.vikingPlayer.getLegalMoves());
-        return Collections.unmodifiableList(allLegalMoves);
-    }
-
+    // Поиск врагов вокруг воина
     public void searchEnemies() {
         for(Piece piece : this.currentPlayer().getActivePieces()){
             // Если князь расположена на троне, то захватить его могут только 4 врага
@@ -276,50 +265,43 @@ public class Board {
             }
             // Проверка не зажата ли фишка между пустым троном и одним врагом
             if((!piece.getPieceType().isKing())){
-                if ((!this.getTile(40).isTileOccupied()) &&
-                        (piece.getPiecePosition() == 31 && this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition()))) ||
-                        (piece.getPiecePosition() == 39 && this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition()))) ||
-                        (piece.getPiecePosition() == 41 && this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) ||
-                        (piece.getPiecePosition() == 49 && this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition())))
-
-                ) {
-                    piece.setEnemies();
+                if(!this.getTile(40).isTileOccupied()){
+                    if((piece.getPiecePosition() == 31 && this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition()))) ||
+                            (piece.getPiecePosition() == 39 && this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition()))) ||
+                            (piece.getPiecePosition() == 41 && this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) ||
+                            (piece.getPiecePosition() == 49 && this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) ){
+                        piece.setEnemies();
+                    }
                 }
             }
-
         }
     }
-
-
-
+    // Вспомогательный класс Builder, который расставляет и удаляет фигуры с игровой доски
     public static class Builder{
-
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
-
-        Move transitionMove;
-
+        // TODO Почему Хэшмапа?
         public Builder(){
             this.boardConfig = new HashMap<>();
         }
+        // Расстановка фигур на доске
         public Builder setPiece(final Piece piece){
             this.boardConfig.put(piece.getPiecePosition(), piece);
             return this;
         }
+        // Удаление фигур с доски
         public Builder delPiece(int key){
             this.boardConfig.remove(key);
             return this;
         }
-
-
+        // Установка перехода хода
         public Builder setMoveMaker(final Alliance nextMoveMaker){
             this.nextMoveMaker = nextMoveMaker;
             return this;
         }
+        // Создание нового экземпляра класса Board (новая доска)
         public Board build(){
             return new Board(this);
         }
-
-
     }
 }

@@ -1,11 +1,9 @@
 package OberegEngine.Pieces;
 
-import OberegEngine.Alliance;
+import OberegEngine.Player.Alliance;
 import OberegEngine.Board.Board;
 import OberegEngine.Board.BoardUtils;
 import OberegEngine.Board.Move;
-import OberegEngine.Board.Move.MajorAttackMove;
-import OberegEngine.Board.Move.MajorMove;
 import OberegEngine.Board.Tile;
 
 import java.util.ArrayList;
@@ -41,7 +39,8 @@ public class King extends Piece {
                     if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)){
                         final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                         if(!candidateDestinationTile.isTileOccupied()){         // если плитка не занята
-                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                            //legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                            legalMoves.add(new Move(board, this, candidateDestinationCoordinate));
                         }
                     }
                 }

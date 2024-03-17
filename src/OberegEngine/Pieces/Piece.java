@@ -1,6 +1,6 @@
 package OberegEngine.Pieces;
 
-import OberegEngine.Alliance;
+import OberegEngine.Player.Alliance;
 import OberegEngine.Board.Board;
 import OberegEngine.Board.Move;
 
@@ -9,12 +9,10 @@ import java.util.Collection;
 public abstract class Piece {
     protected final PieceType pieceType;
     protected final int piecePosition;
-    protected boolean leftAttackPosition;
     protected final Alliance pieceAlliance;
-//    protected final boolean isFirstMove;
-    //private final int cashedHashCode;
+    private final int cashedHashCode;
     private boolean enemies;
-    private boolean verticalEnemies;
+
 
 
 
@@ -25,17 +23,12 @@ public abstract class Piece {
         this.pieceType = pieceType;
         this.pieceAlliance = pieceAlliance;
         this.piecePosition = piecePosition;
-
-        //this.cashedHashCode = computeHashCode();
+        this.cashedHashCode = computeHashCode();
     }
-
-
-
     private int computeHashCode() {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
-//        result = 31 * result + (isFirstMove ? 1 : 0);
         return result;
     }
     // Переопределяем стандартный метод equals class Object с равенства ссылок, на равенство объектов
@@ -50,17 +43,7 @@ public abstract class Piece {
         final Piece otherPiece = (Piece) other;
         return piecePosition == otherPiece.getPiecePosition() && pieceType == otherPiece.getPieceType() &&
                 pieceAlliance == otherPiece.getPieceAlliance() ;
-
-//        && isFirstMove == otherPiece.isFirstMove()
     }
-//    @Override
-//    public int hashCode(){
-//        return this.cashedHashCode;
-//    }
-
-//    public boolean isFirstMove(){
-//        return this.isFirstMove;
-//    }
 
     public int getPiecePosition(){
         return this.piecePosition;
@@ -87,18 +70,8 @@ public abstract class Piece {
     public boolean getEnemies(){
         return this.enemies;
     }
-
-    public boolean getVerticalEnemies(){
-        return this.verticalEnemies;
-    }
-
-
-//    public Piece removePiece() {
-//        return null;
-//    }
-
     public enum PieceType{
-        ROOK("R", 500) {
+        WARRIOR("W", 500) {
             @Override
             public boolean isKing() {
                 return false;
@@ -109,8 +82,6 @@ public abstract class Piece {
             public boolean isKing() {
                 return true;
             }
-
-
         };
         private String pieceName;
         private int pieceValue;
@@ -119,7 +90,6 @@ public abstract class Piece {
             this.pieceName = pieceName;
             this.pieceValue = pieceValue;
         }
-
         @Override
         public String toString(){
             return this.pieceName;
@@ -128,7 +98,6 @@ public abstract class Piece {
             return this.pieceValue;
         }
         public abstract boolean isKing();
-
     }
 }
 

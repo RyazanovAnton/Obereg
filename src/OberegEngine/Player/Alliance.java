@@ -1,4 +1,4 @@
-package OberegEngine;
+package OberegEngine.Player;
 
 import OberegEngine.Player.Player;
 import OberegEngine.Player.SlavPlayer;

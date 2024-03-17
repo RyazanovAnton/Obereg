@@ -1,11 +1,9 @@
 package OberegEngine.Pieces;
 
-import OberegEngine.Alliance;
+import OberegEngine.Player.Alliance;
 import OberegEngine.Board.Board;
 import OberegEngine.Board.BoardUtils;
 import OberegEngine.Board.Move;
-import OberegEngine.Board.Move.MajorAttackMove;
-import OberegEngine.Board.Move.MajorMove;
 import OberegEngine.Board.Tile;
 
 import java.util.ArrayList;
@@ -13,12 +11,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Rook extends Piece {
+public class Warrior extends Piece {
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -1, 1, 9};
     private static final int MAXDISTANCE = 9;
 
-    public Rook(final Alliance pieceAlliance, final int piecePosition) {
-        super(PieceType.ROOK, piecePosition, pieceAlliance);
+    public Warrior(final Alliance pieceAlliance, final int piecePosition) {
+        super(PieceType.WARRIOR, piecePosition, pieceAlliance);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class Rook extends Piece {
                     if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                         final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                         if (!candidateDestinationTile.isTileOccupied()) {         // если плитка не занята
-                            legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                            legalMoves.add(new Move(board, this, candidateDestinationCoordinate));
                         }
                     }
                 }
@@ -62,13 +60,13 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Rook movePiece(Move move) {
-        return new Rook(move.getMovedPiece().pieceAlliance, move.getDestinationCoordinate());
+    public Warrior movePiece(Move move) {
+        return new Warrior(move.getMovedPiece().pieceAlliance, move.getDestinationCoordinate());
     }
 
     @Override
     public String toString() {
-        return PieceType.ROOK.toString();
+        return PieceType.WARRIOR.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {

@@ -1,6 +1,4 @@
-import OberegGUI.GameBoard;
 import OberegGUI.MyGameTable;
-import OberegGUI.Table;
 
 public class Tests {
     public static void main(String[] args) {
