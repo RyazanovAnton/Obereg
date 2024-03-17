@@ -28,15 +28,26 @@ public class Rook extends Piece {
         for (final int candidateCoordinateOffset : CANDIDATE_MOVE_VECTOR_COORDINATES) {
             int candidateDestinationCoordinate = this.piecePosition;
             for(int i =0; i<MAXDISTANCE; i++) {
+                // Исключения на перемещения, если фишка находится в первой или в последней колонне,
+                // и смещение входит на соседний ряд
                 if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
                             isNinthColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
                         break;
                     }
                     candidateDestinationCoordinate += candidateCoordinateOffset;
+                    // Запрет на занятие уже занятых клеток
                     if(BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate) &&
                             board.getTile(candidateDestinationCoordinate).isTileOccupied()){
                         break;
+                    }
+                    // Запрет на поставновку на трон и точки побега, но перепрыгнуть через трон можно
+                    if(     candidateDestinationCoordinate == 40 ||
+                            candidateDestinationCoordinate == 0 ||
+                            candidateDestinationCoordinate == 8 ||
+                            candidateDestinationCoordinate == 72 ||
+                            candidateDestinationCoordinate ==80){
+                        continue;
                     }
                     if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
                         final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);

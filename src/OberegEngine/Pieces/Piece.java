@@ -13,7 +13,7 @@ public abstract class Piece {
     protected final Alliance pieceAlliance;
 //    protected final boolean isFirstMove;
     //private final int cashedHashCode;
-    private boolean horizontalEnemies;
+    private boolean enemies;
     private boolean verticalEnemies;
 
 
@@ -81,17 +81,13 @@ public abstract class Piece {
     public abstract Collection<Move> calculateLegalMoves(final Board board);
     public abstract Piece movePiece(Move move);
 
-    public boolean setHorizontalEnemies() {
-        return this.horizontalEnemies = true;
+    public boolean setEnemies() {
+        return this.enemies = true;
+    }
+    public boolean getEnemies(){
+        return this.enemies;
     }
 
-    public boolean getHorizontalEnemies(){
-        return this.horizontalEnemies;
-    }
-
-    public boolean setVerticalEnemies() {
-        return this.verticalEnemies = true;
-    }
     public boolean getVerticalEnemies(){
         return this.verticalEnemies;
     }

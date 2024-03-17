@@ -27,7 +27,6 @@ public class Board {
         this.slavPlayer = new SlavPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.vikingPlayer = new VikingPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.slavPlayer, this.vikingPlayer);
-        //this.currentPlayer = null;
     }
     @Override
     public String toString(){
@@ -55,9 +54,6 @@ public class Board {
     }
     public Collection<Piece> getWhitePieces(){
         return this.slavPieces;
-    }
-    private static String prettyPrint(final Tile tile){
-        return tile.toString();
     }
 
 
@@ -158,7 +154,7 @@ public class Board {
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 37));
         builder.setPiece(new Rook(Alliance.VIKINGS, 45));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 35));
-//        builder.setPiece(new Rook(Alliance.VIKINGS, 43));
+        builder.setPiece(new Rook(Alliance.VIKINGS, 43));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 44));
         builder.setPiece(new Rook(Alliance.VIKINGS, 53));
 //        builder.setPiece(new Rook(Alliance.VIKINGS, 67));
@@ -178,40 +174,119 @@ public class Board {
 //        builder.setPiece(new Rook(Alliance.SLAVS, 41));
 //        builder.setPiece(new Rook(Alliance.SLAVS, 42));
 
-        // WHITE is the first!
-        builder.setMoveMaker(Alliance.SLAVS);
+        // Викинги ходят первыми
+        builder.setMoveMaker(Alliance.VIKINGS);
         return builder.build();
     }
-
-    // Maybe I need to implement Guava Iterables ??
     public Collection<Move> getAllLegalMoves(){
         List<Move> allLegalMoves = new ArrayList<>();
         allLegalMoves.addAll(this.slavPlayer.getLegalMoves());
         allLegalMoves.addAll(this.vikingPlayer.getLegalMoves());
-        //return allLegalMoves;
         return Collections.unmodifiableList(allLegalMoves);
     }
 
     public void searchEnemies() {
-        for (int i = 1; i < BoardUtils.NUM_TILES; i++) {
-            if (this.getTile(i).isTileOccupied()) {
-                if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_RAW) &&
-                        BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_RAW)) {
-                    if (this.isEnemyOnTheLeft(this.getTile(i)) &&
-                            this.isEnemyOnTheRight(this.getTile(i))) {
-                        this.getTile(i).getPiece().setHorizontalEnemies();
+        for(Piece piece : this.currentPlayer().getActivePieces()){
+            // Если князь расположена на троне, то захватить его могут только 4 врага
+            if (piece.getPieceType().isKing() && piece.getPiecePosition() == 40){
+                if(this.isEnemyOnTheRight(this.getTile(40)) &&
+                        this.isEnemyOnTheLeft(this.getTile(40)) &&
+                        this.isEnemyOnTheTop(this.getTile(40)) &&
+                        this.isEnemyOnTheBottom(this.getTile(40))
+                ){
+                    piece.setEnemies();
+                }
+            }
+            // Если князь расположен рядом с троном, то захватить его могут только 3 врага
+            if (piece.getPieceType().isKing() && piece.getPiecePosition() != 40){
+                if(     (piece.getPiecePosition() == 39 &&
+                                this.isEnemyOnTheLeft(this.getTile(39)) &&
+                                this.isEnemyOnTheTop(this.getTile(39)) &&
+                                this.isEnemyOnTheBottom(this.getTile(39))) ||
+                        (piece.getPiecePosition() == 31 &&
+                                this.isEnemyOnTheLeft(this.getTile(31)) &&
+                                this.isEnemyOnTheTop(this.getTile(31)) &&
+                                this.isEnemyOnTheRight(this.getTile(31))) ||
+                        (piece.getPiecePosition() == 41 &&
+                                this.isEnemyOnTheRight(this.getTile(41)) &&
+                                this.isEnemyOnTheTop(this.getTile(41)) &&
+                                this.isEnemyOnTheBottom(this.getTile(41))) ||
+                        (piece.getPiecePosition() == 49 &&
+                                this.isEnemyOnTheLeft(this.getTile(49)) &&
+                                this.isEnemyOnTheRight(this.getTile(49)) &&
+                                this.isEnemyOnTheBottom(this.getTile(49)))
+                ){
+                    piece.setEnemies();
+                }
+            }
+            if( piece.getPieceType().isKing() &&
+                            (piece.getPiecePosition() != 40 &&
+                            piece.getPiecePosition() != 31 &&
+                            piece.getPiecePosition() != 39 &&
+                            piece.getPiecePosition() != 41 &&
+                            piece.getPiecePosition() != 49)
+                    ){
+                // Проверка не зажат ли Князь на поле между двумя врагами по горизонтали
+                if (BoardUtils.isValidTileCoordinate(piece.getPiecePosition() - BoardUtils.NEXT_ON_RAW) &&
+                        BoardUtils.isValidTileCoordinate(piece.getPiecePosition() + BoardUtils.NEXT_ON_RAW)) {
+                    if (this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())) &&
+                            this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
+                        piece.setEnemies();
                     }
                 }
-                if (BoardUtils.isValidTileCoordinate(i - BoardUtils.NEXT_ON_COLUMN) &&
-                        BoardUtils.isValidTileCoordinate(i + BoardUtils.NEXT_ON_COLUMN)) {
-                    if (this.isEnemyOnTheTop(this.getTile(i)) &&
-                            this.isEnemyOnTheBottom(this.getTile(i))) {
-                        this.getTile(i).getPiece().setVerticalEnemies();
-                        System.out.println(i);
-                        System.out.println(this.getTile(i).getPiece().setVerticalEnemies());
+                // Проверка не зажат ли Князь на поле двумя врагами по вертикали
+                if (BoardUtils.isValidTileCoordinate(piece.getPiecePosition() - BoardUtils.NEXT_ON_COLUMN) &&
+                        BoardUtils.isValidTileCoordinate(piece.getPiecePosition() + BoardUtils.NEXT_ON_COLUMN)) {
+                    if (this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition())) &&
+                            this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
+                        piece.setEnemies();
                     }
                 }
             }
+            if(piece.getPiecePosition() != 40 && (!piece.getPieceType().isKing())){
+                // Проверка не зажат ли Воин на поле между двумя врагами по горизонтали
+                if (BoardUtils.isValidTileCoordinate(piece.getPiecePosition() - BoardUtils.NEXT_ON_RAW) &&
+                        BoardUtils.isValidTileCoordinate(piece.getPiecePosition() + BoardUtils.NEXT_ON_RAW)) {
+                    if (this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())) &&
+                            this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
+                        piece.setEnemies();
+                    }
+                }
+                // Проверка не зажат ли Воин на поле двумя врагами по вертикали
+                if (BoardUtils.isValidTileCoordinate(piece.getPiecePosition() - BoardUtils.NEXT_ON_COLUMN) &&
+                        BoardUtils.isValidTileCoordinate(piece.getPiecePosition() + BoardUtils.NEXT_ON_COLUMN)) {
+                    if (this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition())) &&
+                            this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
+                        piece.setEnemies();
+                    }
+                }
+            }
+            // Проверка не зажата ли фишка между точкой побега и одним врагом
+            if(
+                    (piece.getPiecePosition() == 1 && this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 9 && this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 7 && this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 17 && this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 63 && this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 73 && this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 71 && this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition()))) ||
+                    (piece.getPiecePosition() == 79 && this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())))
+            ){
+                piece.setEnemies();
+            }
+            // Проверка не зажата ли фишка между пустым троном и одним врагом
+            if((!piece.getPieceType().isKing())){
+                if ((!this.getTile(40).isTileOccupied()) &&
+                        (piece.getPiecePosition() == 31 && this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition()))) ||
+                        (piece.getPiecePosition() == 39 && this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition()))) ||
+                        (piece.getPiecePosition() == 41 && this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) ||
+                        (piece.getPiecePosition() == 49 && this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition())))
+
+                ) {
+                    piece.setEnemies();
+                }
+            }
+
         }
     }
 
