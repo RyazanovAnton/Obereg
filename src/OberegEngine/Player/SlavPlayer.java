@@ -19,7 +19,6 @@ public class SlavPlayer extends Player {
     public Alliance getAlliance() {
         return Alliance.SLAVS;
     }
-
     @Override
     public Player getOpponent() {
         return this.board.vikingPlayer();

@@ -3,7 +3,7 @@ package OberegEngine.Player;
 import OberegEngine.Player.Player;
 import OberegEngine.Player.SlavPlayer;
 import OberegEngine.Player.VikingPlayer;
-
+// Перечисление возможных альянсов
 public enum Alliance {
     SLAVS {
         @Override
@@ -36,9 +36,8 @@ public enum Alliance {
         }
 
     };
-
+    // Абстрактные методы перечисления
     public abstract boolean isSlavs();
     public abstract boolean isVikings();
-
     public abstract Player choosePlayer(final SlavPlayer slavPlayer, final VikingPlayer vikingPlayer);
 }

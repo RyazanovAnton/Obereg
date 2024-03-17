@@ -11,17 +11,14 @@ public class VikingPlayer extends Player{
                        final Collection<Move> vikingStandardLegalMoves) {
         super(board, vikingStandardLegalMoves);
     }
-
     @Override
     public Collection<Piece> getActivePieces() {
         return this.board.getVikingPieces();
     }
-
     @Override
     public Alliance getAlliance() {
         return Alliance.VIKINGS;
     }
-
     @Override
     public Player getOpponent() {
         return this.board.slavPlayer();

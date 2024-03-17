@@ -12,10 +12,6 @@ public abstract class Piece {
     protected final Alliance pieceAlliance;
     private final int cashedHashCode;
     private boolean enemies;
-
-
-
-
     Piece(final PieceType pieceType,
           final int piecePosition,
           final Alliance pieceAlliance
@@ -25,6 +21,7 @@ public abstract class Piece {
         this.piecePosition = piecePosition;
         this.cashedHashCode = computeHashCode();
     }
+    // TODO пока что не нужен
     private int computeHashCode() {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
@@ -44,60 +41,32 @@ public abstract class Piece {
         return piecePosition == otherPiece.getPiecePosition() && pieceType == otherPiece.getPieceType() &&
                 pieceAlliance == otherPiece.getPieceAlliance() ;
     }
-
+    // Получить порядковый номер координаты фигуры
     public int getPiecePosition(){
         return this.piecePosition;
     }
-
+    // Определить принадлежность фигуры к альянсу Vikings / Slavs
     public Alliance getPieceAlliance(){
         return this.pieceAlliance;
     }
-
+    // Получить тип фигуры WARRIOR / KING
     public PieceType getPieceType(){
         return this.pieceType;
     }
-    //Используется в Comparator in class TakenPiecesPanel
+    // Получить ценность фигуры
     public int getPieceValue(){
-        //делегирование метода в перечисление pieceType
         return this.pieceType.getPieceValue();
     }
+    // Полсччет всех возможных ходоф фигуры
     public abstract Collection<Move> calculateLegalMoves(final Board board);
+    // Служебный метод для перемещения фигуры
     public abstract Piece movePiece(Move move);
-
+    // Фигура была захвачена противником
     public boolean setEnemies() {
         return this.enemies = true;
     }
+    // Получить информацию о состоянии фигуры
     public boolean getEnemies(){
         return this.enemies;
     }
-    public enum PieceType{
-        WARRIOR("W", 500) {
-            @Override
-            public boolean isKing() {
-                return false;
-            }
-        },
-        KING("K", 10000) {
-            @Override
-            public boolean isKing() {
-                return true;
-            }
-        };
-        private String pieceName;
-        private int pieceValue;
-        PieceType(final String pieceName,
-                  final int pieceValue){
-            this.pieceName = pieceName;
-            this.pieceValue = pieceValue;
-        }
-        @Override
-        public String toString(){
-            return this.pieceName;
-        }
-        public int getPieceValue(){
-            return this.pieceValue;
-        }
-        public abstract boolean isKing();
-    }
 }
-

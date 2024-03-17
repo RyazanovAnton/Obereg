@@ -1,5 +1,5 @@
 package OberegEngine.Player;
-
+// Перечисление возможных ходов
 public enum MoveStatus {
     DONE {
         @Override

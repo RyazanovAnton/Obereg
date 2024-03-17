@@ -8,8 +8,6 @@ public class MoveTransition {
     private final Board transitionBoard;
     private final Move move;
     private final MoveStatus moveStatus;
-
-
     public MoveTransition(final Board transitiontBoard,
                           final Move move,
                           final MoveStatus moveStatus) {
@@ -17,15 +15,16 @@ public class MoveTransition {
         this.move = move;
         this.moveStatus = moveStatus;
     }
-
+    // Получить информацию о статусе хода
     public MoveStatus getMoveStatus() {
         return this.moveStatus;
     }
-
+    // Сделать переход хода
     public Board getTransitionBoard() {
         return this.transitionBoard;
     }
-
+    // Метод для удаления фигур противника, которые были захвачены на текущем ходу.
+    // Если игрок в текущем ходу сам встал под захват своей фигуры, то она не удаляется
     public Board deleteCapturedEnemies(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
@@ -39,7 +38,6 @@ public class MoveTransition {
                 builder.delPiece(piece.getPiecePosition());
                 builder.setMoveMaker(board.currentPlayer().getAlliance());
                 board = builder.build();
-
                 break;
             }
         }
