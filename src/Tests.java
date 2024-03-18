@@ -9,7 +9,9 @@ public class Tests {
        //Table mt1 = new Table();
 
 
-      MyGameTable mt1 = new MyGameTable();
+      //MyGameTable mt1 = new MyGameTable();
+        //
+        MyGameTable.get().show();
 
        //MyGameTable.get().show();
 

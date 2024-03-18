@@ -5,11 +5,15 @@ import OberegEngine.Board.BoardUtils;
 import OberegEngine.Board.Move;
 import OberegEngine.Board.Tile;
 import OberegEngine.Pieces.Piece;
+import OberegEngine.Player.AI.MiniMax;
+import OberegEngine.Player.AI.MoveStrategy;
 import OberegEngine.Player.MoveTransition;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -17,17 +21,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 // Игровое поле
-public class MyGameTable {
+public class MyGameTable extends Observable{
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
+    private final GameSetup gameSetup;
     private Board gameboard;
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece humanMovedPiece;
+    private Move computerMove;
     private boolean highLightLegalMoves = true;
     private final TakenPiecesPanel takenPiecesPanel;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(835, 557);
@@ -35,6 +42,8 @@ public class MyGameTable {
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(57, 57);
     private static String defaultPieceImagesPath = "art/pieces/plain/";
     private final Color darkTileColor = Color.decode("#593E1A");
+    // SINGLETON
+    private static final  MyGameTable INSTANCE = new MyGameTable();
     // Конструктор для стартового отображения
     // игрового поля с расставленными фигурами
     public MyGameTable() {
@@ -44,11 +53,24 @@ public class MyGameTable {
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
         this.gameboard = Board.createStandardBoard();
         this.boardPanel = new MyGameTable.BoardPanel();
+        final JMenuBar tableMenuBar = createTableMenuBar();
+        this.gameFrame.setJMenuBar(tableMenuBar);
+        this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
+        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.EAST);
+        this.gameSetup = new GameSetup(gameFrame, true);
+
+
+
+        this.addObserver(new TableGameAIWatcher());
         this.gameFrame.setVisible(true);
         this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
-        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.EAST);
+
+
+
+
+
+
     }
     // Служебный класс для создания сетки 9х9, куда будут добавляться тайлы
     private class BoardPanel extends JPanel {
@@ -75,6 +97,113 @@ public class MyGameTable {
             repaint();
         }
     }
+    //TODO
+    private JMenuBar createTableMenuBar(){
+        final JMenuBar tableMenuBar = new JMenuBar();
+        tableMenuBar.add(createOptionsMenu());
+        return tableMenuBar;
+    }
+    private JMenu createOptionsMenu(){
+        final JMenu optionsMenu = new JMenu("Options");
+        final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game");
+        setupGameMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MyGameTable.get().getGameSetup().promptUser();
+                MyGameTable.get().setupUpdate(MyGameTable.get().getGameSetup());
+            }
+        });
+        optionsMenu.add(setupGameMenuItem);
+        return optionsMenu;
+    }
+    public void show(){
+        MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
+        MyGameTable.get().getTakenPiecesPanel().updateCounts(gameboard);
+        MyGameTable.get().getTakenPiecesPanel().checkWinCondition(gameboard);
+    }
+    public static MyGameTable get(){
+        return INSTANCE;
+    }
+    private GameSetup getGameSetup(){
+        return this.gameSetup;
+    }
+    private void setupUpdate(final GameSetup gameSetup){
+        setChanged();
+        notifyObservers(gameSetup);
+    }
+    private Board getGameBoard(){
+        return this.gameboard;
+    }
+    public void updateGameBoard(final Board board){
+        this.gameboard = board;
+    }
+    public void updateComputerMove(final Move move){
+        this.computerMove = move;
+    }
+    // Метод может быть приватным, потому что использован паттерн Синглтон
+    private TakenPiecesPanel getTakenPiecesPanel(){
+        return this.takenPiecesPanel;
+    }
+    private BoardPanel getBoardPanel(){
+        return this.boardPanel;
+    }
+    private void moveMadeUpdate(final PlayerType playerType){
+        setChanged();
+        notifyObservers(playerType);
+    }
+
+
+    private static class TableGameAIWatcher implements Observer{
+        @Override
+        public void update(Observable o, Object arg) {
+            if (MyGameTable.get().getGameSetup().isAIPlayer(MyGameTable.get().getGameBoard().currentPlayer())){
+                //TODO create an AI thread
+                // execute AI work
+                final AIThinkTank thinkTank = new AIThinkTank();
+                thinkTank.execute();
+            }
+        }
+        private static class AIThinkTank extends SwingWorker<Move, String>{
+            //у этого класса есть возможность деалать перемещения и корректировать строки
+            private AIThinkTank(){
+            }
+            @Override
+            protected Move doInBackground() throws Exception {
+                //для более глубокого поиска нужно альфа-бетта отсечение!
+                final MoveStrategy miniMax = new MiniMax(3);
+                final Move bestMove = miniMax.execute(MyGameTable.get().getGameBoard());
+                return bestMove;
+            }
+            @Override
+            public void done(){
+                //когда поток SwingWorker'a завершен - проводится работа по очистке в этом методе
+                try {
+                    final Move bestMove = get();
+                    MyGameTable.get().updateComputerMove(bestMove);
+                    MyGameTable.get().updateGameBoard(MyGameTable.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
+//                    MyGameTable.get().getGameHistoryPanel().redo(Table.get().getGameBoard(), Table.get().getMoveLog());
+                    //MyGameTable.get().getTakenPiecesPanel().redo(MyGameTable.get().moveLog);
+                    MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
+                    MyGameTable.get().moveMadeUpdate(PlayerType.COMPUTER);
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+
+    }
+
+
+    enum PlayerType {
+        HUMAN,
+        COMPUTER
+    }
+
+
     // Класс, на котором могут размещаться фигуры
     private class TilePanel extends JPanel {
         private final int tileId;
@@ -124,13 +253,32 @@ public class MyGameTable {
                             destinationTile = null;
                             humanMovedPiece = null;
                         }
-                        // Обновляем счетчики и проверяем условия победы,
-                        // после чего рисуем новую доску на экране
-                        takenPiecesPanel.updateCounts(gameboard);
-                        takenPiecesPanel.checkWinCondition(gameboard);
-                        boardPanel.drawBoard(gameboard);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+//                                takenPiecesPanel.updateCounts(gameboard);
+//                                takenPiecesPanel.checkWinCondition(gameboard);
+                                if(gameSetup.isAIPlayer(gameboard.currentPlayer())){
+//                                    gameboard.searchEnemies();
+//                                    gameboard.deleteCapturedEnemies();
+                                    MyGameTable.get().moveMadeUpdate(PlayerType.HUMAN);
+
+                                }
+                                // Обновляем счетчики и проверяем условия победы,
+                                // после чего рисуем новую доску на экране
+
+                                boardPanel.drawBoard(gameboard);
+
+                            }
+                        });
                     }
-                }
+//                        // Обновляем счетчики и проверяем условия победы,
+//                        // после чего рисуем новую доску на экране
+//                        takenPiecesPanel.updateCounts(gameboard);
+//                        takenPiecesPanel.checkWinCondition(gameboard);
+//                        boardPanel.drawBoard(gameboard);
+                    }
+
                 @Override
                 public void mousePressed(final MouseEvent e) {
                 }

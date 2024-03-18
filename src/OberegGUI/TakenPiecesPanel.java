@@ -37,40 +37,17 @@ public class TakenPiecesPanel extends JLabel {
         this.jlVikingTeamCount.setText(String.valueOf(board.vikingPlayer().getActivePieces().size()));
     }
     // Проверка условий завершения игры
-    public void checkWinCondition(Board board) {
-
-        if (board.slavPlayer().getActivePieces().size() == 0 ||
-                board.vikingPlayer().getActivePieces().size() == 0) {
+    public void checkWinCondition(Board board){
+        if (board.checkVikingWinConditions()){
             jlEndGameLabel = new JLabel();
             jlEndGameLabel.setBounds(100, 200, 150, 30);
             this.add(jlEndGameLabel);
-            if (board.vikingPlayer().getActivePieces().size() == 0) {
-                // Все воины варягов захвачены
-                jlEndGameLabel.setText("Slavs win!!!");
-            }
-            if (board.slavPlayer().getActivePieces().size() == 0) {
-                //Все воины викингов захвачены
-                jlEndGameLabel.setText("Vikings win!!!");
-            }
-        } else if (!board.kingIsAlive()) {
-            // Князь захвачен
-            jlEndGameLabel = new JLabel();
-            this.add(jlEndGameLabel);
-            jlEndGameLabel.setBounds(100, 200, 150, 30);
             jlEndGameLabel.setText("Vikings win!!!");
         }
-        // Князю удалось достичь клетки победы
-        else if ((board.getTile(0).isTileOccupied() &&
-                board.getTile(0).getPiece().getPieceType().isKing()) ||
-                (board.getTile(8).isTileOccupied() &&
-                        board.getTile(8).getPiece().getPieceType().isKing()) ||
-                (board.getTile(72).isTileOccupied() &&
-                        board.getTile(72).getPiece().getPieceType().isKing()) ||
-                (board.getTile(80).isTileOccupied() &&
-                        board.getTile(80).getPiece().getPieceType().isKing())) {
+        else if (board.checkSlavWinConditions()){
             jlEndGameLabel = new JLabel();
-            this.add(jlEndGameLabel);
             jlEndGameLabel.setBounds(100, 200, 150, 30);
+            this.add(jlEndGameLabel);
             jlEndGameLabel.setText("Slavs win!!!");
         }
     }

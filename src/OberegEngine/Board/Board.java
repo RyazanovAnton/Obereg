@@ -8,6 +8,7 @@ import OberegEngine.Player.Player;
 import OberegEngine.Player.SlavPlayer;
 import OberegEngine.Player.VikingPlayer;
 
+import javax.swing.*;
 import java.util.*;
 
 public class Board {
@@ -276,6 +277,67 @@ public class Board {
             }
         }
     }
+    // Проверка условий завершения игры - победа Варягов
+    public boolean checkSlavWinConditions(){
+        // Все воины варягов захвачены
+        if (this.vikingPlayer().getActivePieces().size() == 0) {
+            return true;
+            }
+        // Князю удалось достичь клетки победы
+        else if ((this.getTile(0).isTileOccupied() &&
+                this.getTile(0).getPiece().getPieceType().isKing()) ||
+                (this.getTile(8).isTileOccupied() &&
+                        this.getTile(8).getPiece().getPieceType().isKing()) ||
+                (this.getTile(72).isTileOccupied() &&
+                        this.getTile(72).getPiece().getPieceType().isKing()) ||
+                (this.getTile(80).isTileOccupied() &&
+                        this.getTile(80).getPiece().getPieceType().isKing())) {
+            return true;
+        }
+        else if (this.vikingPlayer().getLegalMoves().isEmpty()){
+            // Нет свободных ходов у викингов
+            return true;
+        }
+        else return false;
+    }
+    // Проверка условий завершения игры - победа Викингов
+    public boolean checkVikingWinConditions(){
+        //Все воины варягов захвачены
+        if (this.slavPlayer().getActivePieces().size() == 0) {
+            return true;
+        }
+        else if (!this.kingIsAlive()) {
+            // Князь захвачен
+            return true;
+        }
+        else if (this.slavPlayer().getLegalMoves().isEmpty()){
+            // Нет свободных ходов у варягов
+            return true;
+        }
+        else return false;
+    }
+    public Board deleteCapturedEnemies() {
+        for(Piece piece : this.currentPlayer().getActivePieces()){
+            if (piece.getEnemies()) {
+                System.out.println("here...");
+                Board.Builder builder = new Board.Builder();
+                for (final Piece piece2 : this.currentPlayer().getActivePieces()) {
+                    builder.setPiece(piece2);
+                }
+                for (final Piece piece2 : this.currentPlayer().getOpponent().getActivePieces()) {
+                    builder.setPiece(piece2);
+                }
+                builder.delPiece(piece.getPiecePosition());
+                builder.setMoveMaker(this.currentPlayer().getAlliance());
+                builder.build();
+                break;
+            }
+        }
+        return this;
+    }
+
+
+
     // Вспомогательный класс Builder, который расставляет и удаляет фигуры с игровой доски
     public static class Builder{
         Map<Integer, Piece> boardConfig;
