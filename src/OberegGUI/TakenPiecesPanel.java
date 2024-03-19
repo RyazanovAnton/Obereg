@@ -49,6 +49,7 @@ public class TakenPiecesPanel extends JLabel {
             jlEndGameLabel.setBounds(100, 200, 150, 30);
             this.add(jlEndGameLabel);
             jlEndGameLabel.setText("Slavs win!!!");
+
         }
     }
 }

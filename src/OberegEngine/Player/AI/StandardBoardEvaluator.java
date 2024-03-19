@@ -5,7 +5,6 @@ import OberegEngine.Pieces.Piece;
 import OberegEngine.Player.Player;
 
 public final class StandardBoardEvaluator implements BoardEvaluator {
-    private static final int DEPTH_BONUS = 100;
 
     @Override
     public int evaluate(final Board board, final int depth) {
@@ -16,16 +15,22 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private int scorePlayer(final Board board,
                             final Player player,
                             final int depth) {
-        return pieceValue(player) + mobility(player);
-    }
-
-
-    private static int depthBonus(int depth) {
-        return depth == 0 ? 1 : DEPTH_BONUS * depth;
+        //System.out.println(pieceValue(player)+mobility(player) + captureEnemies(player));
+        return pieceValue(player) + mobility(player) + captureEnemies(player);
     }
 
     private int mobility(Player player) {
         return player.getLegalMoves().size();
+    }
+
+    private int captureEnemies(Player player){
+        int pieceEnemiesScore = 0;
+        for(Piece piece : player.getOpponent().getActivePieces()){
+            if(piece.getEnemies()){
+               pieceEnemiesScore += 5000;
+            }
+        }
+        return pieceEnemiesScore;
     }
 
     private static int pieceValue(final Player player){

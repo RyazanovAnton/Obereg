@@ -22,19 +22,21 @@ class GameSetup extends JDialog {
               final boolean modal) {
         super(frame, modal);
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
+        myPanel.setSize(250, 400);
+
         final JRadioButton slavHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton slavComputerButton = new JRadioButton(COMPUTER_TEXT);
         final JRadioButton vikingHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton vikingComputerButton = new JRadioButton(COMPUTER_TEXT);
         slavHumanButton.setActionCommand(HUMAN_TEXT);
-        final ButtonGroup whiteGroup = new ButtonGroup();
-        whiteGroup.add(slavHumanButton);
-        whiteGroup.add(slavComputerButton);
+        final ButtonGroup slavGroup = new ButtonGroup();
+        slavGroup.add(slavHumanButton);
+        slavGroup.add(slavComputerButton);
         slavHumanButton.setSelected(true);
 
-        final ButtonGroup blackGroup = new ButtonGroup();
-        blackGroup.add(vikingHumanButton);
-        blackGroup.add(vikingComputerButton);
+        final ButtonGroup vikingGroup = new ButtonGroup();
+        vikingGroup.add(vikingHumanButton);
+        vikingGroup.add(vikingComputerButton);
         vikingComputerButton.setSelected(true);
 
         getContentPane().add(myPanel);
@@ -45,11 +47,11 @@ class GameSetup extends JDialog {
         myPanel.add(vikingHumanButton);
         myPanel.add(vikingComputerButton);
 
-        myPanel.add(new JLabel("Search"));
-        this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(4, 0, 10, 1));
+//        myPanel.add(new JLabel("Search"));
+//        this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(4, 0, 10, 1));
 
         final JButton cancelButton = new JButton("Cancel");
-        final JButton okButton = new JButton("OK");
+        final JButton okButton = new JButton("Start game");
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

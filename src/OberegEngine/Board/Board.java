@@ -240,6 +240,7 @@ public class Board {
                     if (this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())) &&
                             this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
+                        System.out.println("find horiz enemies");
                     }
                 }
                 // Проверка не зажат ли Воин на поле двумя врагами по вертикали
@@ -248,6 +249,7 @@ public class Board {
                     if (this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition())) &&
                             this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
+                        System.out.println("find vert enemies");
                     }
                 }
             }
@@ -316,24 +318,51 @@ public class Board {
         }
         else return false;
     }
-    public Board deleteCapturedEnemies() {
-        for(Piece piece : this.currentPlayer().getActivePieces()){
+    public Board deleteCapturedEnemies(Board board) {
+        for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
-                System.out.println("here...");
+                //System.out.println("draw new board");
                 Board.Builder builder = new Board.Builder();
-                for (final Piece piece2 : this.currentPlayer().getActivePieces()) {
-                    builder.setPiece(piece2);
+                for (final Piece piece2 : board.currentPlayer().getActivePieces()) {
+                    if(!piece2.getEnemies()){
+                        builder.setPiece(piece2);
+                        //System.out.println("set 1st");
+                    }
                 }
-                for (final Piece piece2 : this.currentPlayer().getOpponent().getActivePieces()) {
+                for (final Piece piece2 : board.currentPlayer().getOpponent().getActivePieces()) {
                     builder.setPiece(piece2);
+                    //System.out.println("set 2nd");
                 }
-                builder.delPiece(piece.getPiecePosition());
-                builder.setMoveMaker(this.currentPlayer().getAlliance());
-                builder.build();
-                break;
+                //builder.delPiece(piece.getPiecePosition());
+                builder.setMoveMaker(board.currentPlayer().getAlliance());
+                board = builder.build();
+                return board;
             }
         }
-        return this;
+        return board;
+    }
+    public Board deleteCapturedEnemies2(Board board) {
+        for(Piece piece : board.currentPlayer().getActivePieces()){
+            if (piece.getEnemies()) {
+                //System.out.println("draw new board");
+                Board.Builder builder = new Board.Builder();
+                for (final Piece piece2 : board.currentPlayer().getActivePieces()) {
+                    if(!piece2.getEnemies()){
+                        builder.setPiece(piece2);
+                        //System.out.println("set 1st");
+                    }
+                }
+                for (final Piece piece2 : board.currentPlayer().getOpponent().getActivePieces()) {
+                    builder.setPiece(piece2);
+                    //System.out.println("set 2nd");
+                }
+                //builder.delPiece(piece.getPiecePosition());
+                builder.setMoveMaker(board.currentPlayer().getAlliance());
+                board = builder.build();
+                return board;
+            }
+        }
+        return board;
     }
 
 

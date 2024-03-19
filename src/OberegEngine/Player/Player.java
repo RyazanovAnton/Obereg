@@ -6,6 +6,7 @@ import OberegEngine.Pieces.Piece;
 
 import java.util.Collection;
 import java.util.Collections;
+
 // У класса 2 наследника SlavPlayer / VikingPlayer
 public abstract class Player {
     protected final Board board;
@@ -28,6 +29,10 @@ public abstract class Player {
         if(!isLegalMove(move)){
             return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
+//        if (!gameOver){
+//            return new MoveTransition(this.board, move, MoveStatus.GAME_OVER);
+//        }
+
         final Board transmitonBoard = move.execute();
         return new MoveTransition(transmitonBoard, move, MoveStatus.DONE);
     }

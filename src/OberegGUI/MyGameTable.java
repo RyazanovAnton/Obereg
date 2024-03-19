@@ -44,6 +44,7 @@ public class MyGameTable extends Observable{
     private final Color darkTileColor = Color.decode("#593E1A");
     // SINGLETON
     private static final  MyGameTable INSTANCE = new MyGameTable();
+    public static boolean gameOver = false;
     // Конструктор для стартового отображения
     // игрового поля с расставленными фигурами
     public MyGameTable() {
@@ -134,10 +135,10 @@ public class MyGameTable extends Observable{
     private Board getGameBoard(){
         return this.gameboard;
     }
-    public void updateGameBoard(final Board board){
+    private void updateGameBoard(final Board board){
         this.gameboard = board;
     }
-    public void updateComputerMove(final Move move){
+    private void updateComputerMove(final Move move){
         this.computerMove = move;
     }
     // Метод может быть приватным, потому что использован паттерн Синглтон
@@ -148,11 +149,23 @@ public class MyGameTable extends Observable{
         return this.boardPanel;
     }
     private void moveMadeUpdate(final PlayerType playerType){
+        gameboard.searchEnemies();
+        gameboard = gameboard.deleteCapturedEnemies2(gameboard);
+
+        takenPiecesPanel.updateCounts(gameboard);
+        takenPiecesPanel.checkWinCondition(gameboard);
+//        if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()){
+//            gameOver = true;
+//            System.out.println(gameOver);
+//        }
+        boardPanel.drawBoard(gameboard);
+
+        //gameboard.deleteCapturedEnemies(gameboard);
         setChanged();
         notifyObservers(playerType);
+        //System.out.println("Here!");
+
     }
-
-
     private static class TableGameAIWatcher implements Observer{
         @Override
         public void update(Observable o, Object arg) {
@@ -178,12 +191,13 @@ public class MyGameTable extends Observable{
             public void done(){
                 //когда поток SwingWorker'a завершен - проводится работа по очистке в этом методе
                 try {
+
+
+
                     final Move bestMove = get();
                     MyGameTable.get().updateComputerMove(bestMove);
                     MyGameTable.get().updateGameBoard(MyGameTable.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
-//                    MyGameTable.get().getGameHistoryPanel().redo(Table.get().getGameBoard(), Table.get().getMoveLog());
-                    //MyGameTable.get().getTakenPiecesPanel().redo(MyGameTable.get().moveLog);
-                    MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
+                    //MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
                     MyGameTable.get().moveMadeUpdate(PlayerType.COMPUTER);
 
                 } catch (InterruptedException e) {
@@ -192,9 +206,7 @@ public class MyGameTable extends Observable{
                     throw new RuntimeException(e);
                 }
             }
-
         }
-
     }
 
 
@@ -207,6 +219,7 @@ public class MyGameTable extends Observable{
     // Класс, на котором могут размещаться фигуры
     private class TilePanel extends JPanel {
         private final int tileId;
+
         TilePanel(final MyGameTable.BoardPanel boardPanel,
                   final int tileId) {
             super(new GridBagLayout());
@@ -218,66 +231,88 @@ public class MyGameTable extends Observable{
             addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(final MouseEvent e) {
-                    // ПКМ - сброс всех опций выбора
-                    if (isRightMouseButton(e)) {
-                        sourceTile = null;
-                        destinationTile = null;
-                        humanMovedPiece = null;
-                    } else if (isLeftMouseButton(e)) {
-                        // Первое нажатие ЛКМ, чтобы выбрать одну фигуру,
-                        // после чего станет доступен список её доступных ходов
-                        if (sourceTile == null) {
-                            sourceTile = gameboard.getTile(tileId);
-                            humanMovedPiece = sourceTile.getPiece();
-                            if (humanMovedPiece == null) {
-                                // Если первые нажатия ЛКМ происходят в пустую область
-                                sourceTile = null;
-                            }
-                        } else {
-                            // Второе нажатие ЛКМ
-                            destinationTile = gameboard.getTile((tileId));
-                            final Move move = Move.MoveFactory.createMove(gameboard,
-                                    sourceTile.getTileCoordinate(),
-                                    destinationTile.getTileCoordinate());
-                            final MoveTransition transition = gameboard.currentPlayer().makeMove(move);
-                            if (transition.getMoveStatus().isDone()) {
-                                // Если ход был сделан, то делаем перестановку фигуры на новую позицию и переход хода
-                                gameboard = transition.getTransitionBoard();
-                                // Ищем на новой доске захваченных противников
-                                gameboard.searchEnemies();
-                                // Если найдены захваченные фигуры противника, то снимаем их с доски
-                                gameboard = transition.deleteCapturedEnemies(gameboard);
-                            }
-                            // Снимаем все опции выбора
+                    if (!gameOver) {
+                        // ПКМ - сброс всех опций выбора
+                        if (isRightMouseButton(e)) {
                             sourceTile = null;
                             destinationTile = null;
                             humanMovedPiece = null;
+                        } else if (isLeftMouseButton(e)) {
+                            // Первое нажатие ЛКМ, чтобы выбрать одну фигуру,
+                            // после чего станет доступен список её доступных ходов
+                            if (sourceTile == null) {
+                                sourceTile = gameboard.getTile(tileId);
+                                humanMovedPiece = sourceTile.getPiece();
+                                if (humanMovedPiece == null) {
+                                    // Если первые нажатия ЛКМ происходят в пустую область
+                                    sourceTile = null;
+                                }
+                            } else {
+                                // Второе нажатие ЛКМ
+                                destinationTile = gameboard.getTile((tileId));
+                                final Move move = Move.MoveFactory.createMove(gameboard,
+                                        sourceTile.getTileCoordinate(),
+                                        destinationTile.getTileCoordinate());
+
+
+                                final MoveTransition transition = gameboard.currentPlayer().makeMove(move);
+                                if (transition.getMoveStatus().isDone()) {
+                                    // Если ход был сделан, то делаем перестановку фигуры на новую позицию и переход хода
+                                    gameboard = transition.getTransitionBoard();
+                                    // Ищем на новой доске захваченных противников
+                                    gameboard.searchEnemies();
+                                    // Если найдены захваченные фигуры противника, то снимаем их с доски
+                                    //gameboard = transition.deleteCapturedEnemies(gameboard);
+                                    gameboard = gameboard.deleteCapturedEnemies(gameboard);
+                                    //boardPanel.drawBoard(gameboard);
+                                    if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()) {
+                                        gameOver = true;
+
+                                    }
+                                }
+                                // Снимаем все опции выбора
+                                sourceTile = null;
+                                destinationTile = null;
+                                humanMovedPiece = null;
+                            }
                         }
+                    }
+
+
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
+                                if(!gameOver){
+                                    if(gameSetup.isAIPlayer(gameboard.currentPlayer())){
+                                        //gameboard.searchEnemies();
+//                                    gameboard.deleteCapturedEnemies();
+                                        MyGameTable.get().moveMadeUpdate(PlayerType.HUMAN);
+
+                                    }
+                                }
+
+//
 //                                takenPiecesPanel.updateCounts(gameboard);
 //                                takenPiecesPanel.checkWinCondition(gameboard);
-                                if(gameSetup.isAIPlayer(gameboard.currentPlayer())){
-//                                    gameboard.searchEnemies();
-//                                    gameboard.deleteCapturedEnemies();
-                                    MyGameTable.get().moveMadeUpdate(PlayerType.HUMAN);
 
-                                }
                                 // Обновляем счетчики и проверяем условия победы,
                                 // после чего рисуем новую доску на экране
-
+//                                if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()){
+//                                    gameOver = true;
+//                                    System.out.println(gameOver);
+//                                }
                                 boardPanel.drawBoard(gameboard);
+
 
                             }
                         });
-                    }
+
 //                        // Обновляем счетчики и проверяем условия победы,
 //                        // после чего рисуем новую доску на экране
-//                        takenPiecesPanel.updateCounts(gameboard);
-//                        takenPiecesPanel.checkWinCondition(gameboard);
-//                        boardPanel.drawBoard(gameboard);
-                    }
+                    takenPiecesPanel.updateCounts(gameboard);
+                    takenPiecesPanel.checkWinCondition(gameboard);
+                    //boardPanel.drawBoard(gameboard);
+                }
 
                 @Override
                 public void mousePressed(final MouseEvent e) {
@@ -292,6 +327,8 @@ public class MyGameTable extends Observable{
                 public void mouseExited(final MouseEvent e) {
                 }
             });
+
+
             validate();
         }
         // Отрисовка тайла и всего, что на нем может быть (указатель доступного хода / фигура)
