@@ -183,7 +183,7 @@ public class MyGameTable extends Observable{
             @Override
             protected Move doInBackground() throws Exception {
                 //для более глубокого поиска нужно альфа-бетта отсечение!
-                final MoveStrategy miniMax = new MiniMax(3);
+                final MoveStrategy miniMax = new MiniMax(2);
                 final Move bestMove = miniMax.execute(MyGameTable.get().getGameBoard());
                 return bestMove;
             }

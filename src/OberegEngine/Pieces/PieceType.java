@@ -8,7 +8,7 @@ public enum PieceType{
             return false;
         }
     },
-    KING( 5000) {
+    KING( 1000) {
         @Override
         public boolean isKing() {
             return true;

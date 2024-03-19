@@ -2,6 +2,9 @@ package OberegEngine.Board;
 
 import OberegEngine.Pieces.Piece;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static OberegEngine.Board.Board.*;
 
 public class Move {
@@ -9,6 +12,13 @@ public class Move {
     protected final Piece movedPiece;
     protected final int destinationCoordinate;
     public static final Move NULL_MOVE = new NullMove();
+
+
+    public static ArrayList<Integer> coordinateToCanonical(int coord){
+        Integer col = coord % BoardUtils.NUM_TILES_PER_ROW;
+        Integer row = coord / BoardUtils.NUM_TILES_PER_ROW;
+        return new ArrayList<>(Arrays.asList(row, col));
+    }
 
     // Конструктор основного хода
     public Move(final Board board,
@@ -18,6 +28,18 @@ public class Move {
         this.movedPiece = movedPiece;
         this.destinationCoordinate = destinationCoordinate;
     }
+
+    @Override
+    public String toString(){
+        String line = "";
+        ArrayList<Integer> arr1 = coordinateToCanonical(movedPiece.getPiecePosition());
+        ArrayList<Integer> arr2 = coordinateToCanonical(destinationCoordinate);
+        line += arr1.get(0) + " " + arr1.get(1) + "\n";
+        line += arr2.get(0) + " " + arr2.get(1) + "\n";
+        return line;
+    }
+
+
     // Конструктор для наследнка NullMove
     private Move(final Board board,
                  final int destinationCoordinate){

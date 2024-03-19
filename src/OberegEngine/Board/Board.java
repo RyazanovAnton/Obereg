@@ -11,7 +11,7 @@ import OberegEngine.Player.VikingPlayer;
 import javax.swing.*;
 import java.util.*;
 
-public class Board {
+public class Board{
     private final List<Tile> gameBoard;
     private final Collection<Piece> slavPieces;
     private final Collection<Piece> vikingPieces;
@@ -27,6 +27,32 @@ public class Board {
         this.slavPlayer = new SlavPlayer(this, slavsStandardLegalMoves);
         this.vikingPlayer = new VikingPlayer(this, vikingStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.slavPlayer, this.vikingPlayer);
+    }
+
+    @Override
+    public String toString(){
+         String builder = "";
+        for (int i =0; i<BoardUtils.NUM_TILES_PER_ROW; i++){
+            for(int j = 0; j <BoardUtils.NUM_TILES_PER_ROW; j++){
+                final Tile tileTMP = this.gameBoard.get(i * 9 + j);
+                if(!tileTMP.isTileOccupied()){
+                    builder += "0 ";
+                } else {
+                    if(tileTMP.getPiece() instanceof King){
+                        builder += "K ";
+                    } else if (tileTMP.getPiece() instanceof Warrior){
+                        if(tileTMP.getPiece().getPieceAlliance().isSlavs()){
+                            builder += "S ";
+                        } else {
+                            builder += "W ";
+                        }
+
+                    }
+                }
+            }
+            builder += "\n";
+        }
+        return builder;
     }
     // Получение доступа к фигурам Варягов
     public Player slavPlayer(){
@@ -341,6 +367,7 @@ public class Board {
         }
         return board;
     }
+
     public Board deleteCapturedEnemies2(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
@@ -364,6 +391,8 @@ public class Board {
         }
         return board;
     }
+
+
 
 
 
