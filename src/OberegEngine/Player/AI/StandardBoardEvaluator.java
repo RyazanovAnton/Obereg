@@ -40,9 +40,9 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     @Override
     public int evaluate(final Board board, final Player player, final int depth) {
        int boardValue;
-       boardValue = mobility(player);
+        boardValue = captureEnemies(board);
         System.out.println(boardValue);
-       return boardValue;
+        return boardValue;
     }
 
 //    private int scorePlayer(final Board board,
@@ -75,6 +75,8 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     private int captureEnemies(Board board){
+        //board.searchEnemies();
+
         int pieceEnemiesScore = 0;
 
         for(int i=0; i< BoardUtils.NUM_TILES; ++i){
@@ -90,7 +92,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                     }
                 }
             }
-        //System.out.println(pieceValueScore);
+       // System.out.println(pieceValueScore);
         return pieceEnemiesScore;
     }
 

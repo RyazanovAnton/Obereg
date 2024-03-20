@@ -150,7 +150,7 @@ public class MyGameTable extends Observable{
     }
     private void moveMadeUpdate(final PlayerType playerType){
         gameboard.searchEnemies();
-        gameboard = gameboard.deleteCapturedEnemies2(gameboard);
+        gameboard = gameboard.deleteCapturedEnemies(gameboard);
 
         takenPiecesPanel.updateCounts(gameboard);
         takenPiecesPanel.checkWinCondition(gameboard);
@@ -258,12 +258,14 @@ public class MyGameTable extends Observable{
                                 final MoveTransition transition = gameboard.currentPlayer().makeMove(move);
                                 if (transition.getMoveStatus().isDone()) {
                                     // Если ход был сделан, то делаем перестановку фигуры на новую позицию и переход хода
-                                    gameboard = transition.getTransitionBoard();
+                                   gameboard = transition.getTransitionBoard();
                                     // Ищем на новой доске захваченных противников
+
                                     gameboard.searchEnemies();
                                     // Если найдены захваченные фигуры противника, то снимаем их с доски
                                     //gameboard = transition.deleteCapturedEnemies(gameboard);
                                     gameboard = gameboard.deleteCapturedEnemies(gameboard);
+                                    boardPanel.drawBoard(gameboard);
                                     //boardPanel.drawBoard(gameboard);
                                     if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()) {
                                         gameOver = true;

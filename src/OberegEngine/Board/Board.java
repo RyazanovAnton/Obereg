@@ -368,9 +368,19 @@ public class Board{
         return board;
     }
 
+    public void setTile(int tileCoordinate){
+        this.gameBoard.get(tileCoordinate) = new Tile.EmptyTile(tileCoordinate);
+    }
+
     public Board deleteCapturedEnemies2(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
+                board.getTile(piece.getPiecePosition()) = new Tile.EmptyTile(piece.getPiecePosition());
+
+
+
+
+
                 //System.out.println("draw new board");
                 Board.Builder builder = new Board.Builder();
                 for (final Piece piece2 : board.currentPlayer().getActivePieces()) {

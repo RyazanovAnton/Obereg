@@ -35,8 +35,10 @@ public abstract class Tile {
         return this.tileCoordinate;
     }
 
+
+
     // Первый наследник - пустой тайл
-    private static final class EmptyTile extends Tile{
+    public static final class EmptyTile extends Tile{
         public EmptyTile(final int coordinate){
             super(coordinate);
         }
