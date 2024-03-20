@@ -151,7 +151,7 @@ public class MyGameTable extends Observable{
 //            gameOver = true;
 //            System.out.println(gameOver);
 //        }
-        boardPanel.drawBoard(gameboard);
+        //boardPanel.drawBoard(gameboard);
 
         //gameboard.deleteCapturedEnemies(gameboard);
         setChanged();
@@ -176,7 +176,7 @@ public class MyGameTable extends Observable{
             @Override
             protected Move doInBackground() throws Exception {
                 //для более глубокого поиска нужно альфа-бетта отсечение!
-                final MoveStrategy miniMax = new MiniMax(1);
+                final MoveStrategy miniMax = new MiniMax(3);
                 final Move bestMove = miniMax.execute(MyGameTable.get().getGameBoard());
                 return bestMove;
             }
@@ -191,6 +191,7 @@ public class MyGameTable extends Observable{
                     MyGameTable.get().updateComputerMove(bestMove);
                     MyGameTable.get().updateGameBoard(MyGameTable.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
                     //MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
+                    MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().gameboard);
                     MyGameTable.get().moveMadeUpdate(PlayerType.COMPUTER);
 
                 } catch (InterruptedException e) {
@@ -355,14 +356,16 @@ public class MyGameTable extends Observable{
                               }
                           }
                        }
-                      if (board.getTile(this.tileId).getPiece().getPieceAlliance().isVikings()) {
-                           try {
-                               final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath +
-                                       "viking.png"));
-                               add(new JLabel(new ImageIcon(image)));
-                           } catch (IOException e) {
-                               throw new RuntimeException(e);
-                           }
+                      if(board.getTile(this.tileId).isTileOccupied()){
+                          if (board.getTile(this.tileId).getPiece().getPieceAlliance().isVikings()) {
+                              try {
+                                  final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath +
+                                          "viking.png"));
+                                  add(new JLabel(new ImageIcon(image)));
+                              } catch (IOException e) {
+                                  throw new RuntimeException(e);
+                              }
+                          }
                       }
                    }
         }

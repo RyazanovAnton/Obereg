@@ -2,6 +2,7 @@ package OberegEngine.Player.AI;
 
 import OberegEngine.Board.Board;
 import OberegEngine.Board.Move;
+import OberegEngine.Pieces.Piece;
 import OberegEngine.Player.MoveTransition;
 
 import java.util.ArrayList;
@@ -35,18 +36,21 @@ public class MiniMax implements MoveStrategy {
         for (int i = 0; i<legals.size(); ++i){
             board.updateBoard(tmpBoard);
             Move move = legals.get(i);
+            board.resetEnem();
+            //for (Piece piece : board.)
+//TODO
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             board.updateBoard(moveTransition.getTransitionBoard());
             if(moveTransition.getMoveStatus().isDone()){
                 //currentValue = 1;
 
                 currentValue = board.currentPlayer().getAlliance().isSlavs() ?
-                        min(moveTransition.getTransitionBoard(), this.searchDepth) :
-                        max(moveTransition.getTransitionBoard(), this.searchDepth);
-                if(board.currentPlayer().getAlliance().isSlavs() && currentValue > highestSeenValue){
+                        min(moveTransition.getTransitionBoard(), this.searchDepth-1) :
+                        max(moveTransition.getTransitionBoard(), this.searchDepth-1);
+                if(board.currentPlayer().getOpponent().getAlliance().isSlavs() && currentValue > highestSeenValue){
                     highestSeenValue = currentValue;
                     bestMove = move;
-                }else  if (board.currentPlayer().getAlliance().isVikings() && currentValue < lowestSeenValue){
+                }else  if (board.currentPlayer().getOpponent().getAlliance().isVikings() && currentValue < lowestSeenValue){
                     lowestSeenValue = currentValue;
                     bestMove = move;
                 }

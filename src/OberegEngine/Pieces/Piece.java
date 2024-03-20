@@ -70,4 +70,8 @@ public abstract class Piece {
     public boolean getEnemies(){
         return this.enemies;
     }
+
+    public boolean resetEnem() {
+        return this.enemies = false;
+    }
 }
