@@ -32,12 +32,12 @@ class GameSetup extends JDialog {
         final ButtonGroup slavGroup = new ButtonGroup();
         slavGroup.add(slavHumanButton);
         slavGroup.add(slavComputerButton);
-        slavHumanButton.setSelected(true);
+        slavComputerButton.setSelected(true);
 
         final ButtonGroup vikingGroup = new ButtonGroup();
         vikingGroup.add(vikingHumanButton);
         vikingGroup.add(vikingComputerButton);
-        vikingComputerButton.setSelected(true);
+        vikingHumanButton.setSelected(true);
 
         getContentPane().add(myPanel);
         myPanel.add(new JLabel("Slavs"));

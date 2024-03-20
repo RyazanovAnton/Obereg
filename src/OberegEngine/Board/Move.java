@@ -87,8 +87,6 @@ public class Move {
         newBoard.searchEnemies();
         newBoard.delEnem();
 
-
-
         return newBoard;
     }
     // Вспомогательный класс, как наследник основного для определения недействительного хода

@@ -40,7 +40,7 @@ public class Board{
             for(int j = 0; j <BoardUtils.NUM_TILES_PER_ROW; j++){
                 final Tile tileTMP = this.gameBoard.get(i * 9 + j);
                 if(!tileTMP.isTileOccupied()){
-                    builder += "0 ";
+                    builder += "- ";
                 } else {
                     if(tileTMP.getPiece() instanceof King){
                         builder += "K ";
@@ -273,7 +273,6 @@ public class Board{
                     if (this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())) &&
                             this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
-                        System.out.println("find horiz enemies");
                     }
                 }
                 // Проверка не зажат ли Воин на поле двумя врагами по вертикали
@@ -282,7 +281,6 @@ public class Board{
                     if (this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition())) &&
                             this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
-                        System.out.println("find vert enemies");
                     }
                 }
             }
@@ -387,16 +385,16 @@ public class Board{
 
     public void delEnem(){
         ArrayList<Piece> toDelete = new ArrayList<>();
-        if(true) {
-//        if(this.currentPlayer.getAlliance().isVikings()){
+//        if(true) {
+        if(this.currentPlayer.getOpponent().getAlliance().isVikings()){
             for (Piece piece : slavPieces) {
                 if (piece.getEnemies()) {
                     this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
                     toDelete.add(piece);
                 }
             }
-        }if(true){
-//        } else if(this.currentPlayer.getAlliance().isSlavs()){
+//        }if(true){
+        } else if(this.currentPlayer.getOpponent().getAlliance().isSlavs()){
             for(Piece piece : vikingPieces){
                 if(piece.getEnemies()){
                     this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
@@ -408,9 +406,26 @@ public class Board{
             slavPieces.remove(piece);
             vikingPieces.remove(piece);
         }
-
-
     }
+
+    public void resetEnem() {
+        if(this.currentPlayer.getOpponent().getAlliance().isVikings()){
+            for (Piece piece : slavPieces) {
+                if(piece.getEnemies()){
+                    piece.resetEnem();
+                }
+                }
+            }
+        else if(this.currentPlayer.getOpponent().getAlliance().isSlavs()){
+            for(Piece piece : vikingPieces){
+                if(piece.getEnemies()){
+                    piece.resetEnem();
+                }
+            }
+        }
+    }
+
+
 
     public Board deleteCapturedEnemies2(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
@@ -435,7 +450,6 @@ public class Board{
         }
         return board;
     }
-
 
 
 

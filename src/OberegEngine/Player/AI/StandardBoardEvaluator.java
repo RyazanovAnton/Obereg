@@ -33,7 +33,7 @@ public int evaluate(final Board board, final int depth) {
             }
         }
     }
-    System.out.println(pieceValueScore);
+    //System.out.println(pieceValueScore);
     return pieceValueScore;
 }
 
