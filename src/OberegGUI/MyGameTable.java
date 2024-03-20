@@ -61,16 +61,9 @@ public class MyGameTable extends Observable{
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.EAST);
         this.gameSetup = new GameSetup(gameFrame, true);
 
-
-
         this.addObserver(new TableGameAIWatcher());
         this.gameFrame.setVisible(true);
         this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-
-
-
-
 
     }
     // Служебный класс для создания сетки 9х9, куда будут добавляться тайлы

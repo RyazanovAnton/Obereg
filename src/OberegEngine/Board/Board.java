@@ -155,6 +155,7 @@ public class Board{
                 }
             }
         }
+        // check
         return activePieces;
     }
     // Получение доступа к содержимому Тайла по его порядковому номеру
