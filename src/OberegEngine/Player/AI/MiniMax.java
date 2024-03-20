@@ -31,10 +31,12 @@ public class MiniMax implements MoveStrategy {
         System.out.println(board.currentPlayer() + " thinking with depth = " + this.searchDepth);
         int numMoves = board.currentPlayer().getLegalMoves().size();
         ArrayList<Move> legals = new ArrayList<>(board.currentPlayer().getLegalMoves());
-
+        Board tmpBoard = new Board(board);
         for (int i = 0; i<legals.size(); ++i){
+            board.updateBoard(tmpBoard);
             Move move = legals.get(i);
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
+            board.updateBoard(moveTransition.getTransitionBoard());
             if(moveTransition.getMoveStatus().isDone()){
                 //currentValue = 1;
 
@@ -50,6 +52,7 @@ public class MiniMax implements MoveStrategy {
                 }
             }
         }
+        board.updateBoard(tmpBoard);
         System.out.println(bestMove.toString());
         final long executionTime = System.currentTimeMillis() - startTime;
         return bestMove;
@@ -58,7 +61,7 @@ public class MiniMax implements MoveStrategy {
     public int min(final Board board, final int depth){
         // depth == 0 -> gameOver
         if(depth == 0 ){
-            return this.boardEvaluator.evaluate(board, board.currentPlayer(), depth);
+            return this.boardEvaluator.evaluate(board,  depth);
         }
         int lowestSeenValue = Integer.MAX_VALUE;
         for(final Move move : board.currentPlayer().getLegalMoves()){
@@ -75,7 +78,7 @@ public class MiniMax implements MoveStrategy {
     public int max(final Board board, final int depth){
         // depth == 0 -> gameOver
         if(depth == 0){
-            return this.boardEvaluator.evaluate(board, board.currentPlayer(), depth);
+            return this.boardEvaluator.evaluate(board,  depth);
         }
         int highestSeenValue = Integer.MIN_VALUE;
         for(final Move move : board.currentPlayer().getLegalMoves()){

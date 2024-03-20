@@ -12,13 +12,17 @@ import javax.swing.*;
 import java.util.*;
 
 public class Board{
-    private final List<Tile> gameBoard;
-    private final Collection<Piece> slavPieces;
-    private final Collection<Piece> vikingPieces;
-    private final SlavPlayer slavPlayer;
-    private final VikingPlayer vikingPlayer;
-    private final Player currentPlayer;
-    private Board(final Builder builder){
+    private ArrayList<Tile> gameBoard;
+    private ArrayList<Piece> slavPieces;
+    private ArrayList<Piece> vikingPieces;
+    private SlavPlayer slavPlayer;
+    private VikingPlayer vikingPlayer;
+    private Player currentPlayer;
+
+    public Board(final Board board){
+        this.updateBoard(board);
+    }
+    public Board(final Builder builder){
         this.gameBoard = createGameBoard(builder);
         this.slavPieces = calculateActivePieces(this.gameBoard, Alliance.SLAVS);
         this.vikingPieces = calculateActivePieces(this.gameBoard, Alliance.VIKINGS);
@@ -141,8 +145,8 @@ public class Board{
         return Collections.unmodifiableList(allLegalMoves);
     }
     // Создание коллекции активных войнов на доске
-    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
-        final List<Piece> activePieces = new ArrayList<>();
+    private static ArrayList<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+        final ArrayList<Piece> activePieces = new ArrayList<>();
         for(final Tile tile : gameBoard){
             if(tile.isTileOccupied()){
                 final Piece piece = tile.getPiece();
@@ -151,19 +155,22 @@ public class Board{
                 }
             }
         }
-        return Collections.unmodifiableList(activePieces);
+        return activePieces;
     }
     // Получение доступа к содержимому Тайла по его порядковому номеру
     public Tile getTile(final int tileCoordinate){
         return gameBoard.get(tileCoordinate);
     }
+    public void setTile(int tileCoordinate, Tile tile){
+        gameBoard.set(tileCoordinate, tile);
+    }
     // Создание игрового поля из NUM_TILES (81) элемента
-    private static List<Tile> createGameBoard(final Builder builder){
-        final List<Tile> tiles = new ArrayList<>();
+    private static ArrayList<Tile> createGameBoard(final Builder builder){
+        final ArrayList<Tile> tiles = new ArrayList<>();
         for(int i =0; i< BoardUtils.NUM_TILES; i++) {
             tiles.add(Tile.createTile(i, builder.boardConfig.get(i)));
         }
-        return Collections.unmodifiableList(tiles);
+        return tiles;
     }
     // Исходная расстановка + установка первого хода за викингами
     public static Board createStandardBoard(){
@@ -344,6 +351,16 @@ public class Board{
         }
         else return false;
     }
+
+    public void updateBoard(final Board board){
+        this.gameBoard = board.gameBoard;
+        this.slavPlayer = board.slavPlayer;
+        this.vikingPlayer = board.vikingPlayer;
+        this.slavPieces = board.slavPieces;
+        this.vikingPieces = board.vikingPieces;
+        this.currentPlayer = board.currentPlayer;
+
+    }
     public Board deleteCapturedEnemies(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
@@ -366,6 +383,33 @@ public class Board{
             }
         }
         return board;
+    }
+
+    public void delEnem(){
+        ArrayList<Piece> toDelete = new ArrayList<>();
+        if(true) {
+//        if(this.currentPlayer.getAlliance().isVikings()){
+            for (Piece piece : slavPieces) {
+                if (piece.getEnemies()) {
+                    this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
+                    toDelete.add(piece);
+                }
+            }
+        }if(true){
+//        } else if(this.currentPlayer.getAlliance().isSlavs()){
+            for(Piece piece : vikingPieces){
+                if(piece.getEnemies()){
+                    this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
+                    toDelete.add(piece);
+                }
+            }
+        }
+        for(Piece piece : toDelete){
+            slavPieces.remove(piece);
+            vikingPieces.remove(piece);
+        }
+
+
     }
 
     public Board deleteCapturedEnemies2(Board board) {

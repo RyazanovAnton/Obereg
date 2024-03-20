@@ -83,7 +83,13 @@ public class Move {
         }
         // Переход хода к противнику
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
-        return builder.build();
+        Board newBoard = builder.build();
+        newBoard.searchEnemies();
+        newBoard.delEnem();
+
+
+
+        return newBoard;
     }
     // Вспомогательный класс, как наследник основного для определения недействительного хода
     public static final class NullMove extends Move{

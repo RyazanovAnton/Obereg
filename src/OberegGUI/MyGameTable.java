@@ -150,7 +150,7 @@ public class MyGameTable extends Observable{
     }
     private void moveMadeUpdate(final PlayerType playerType){
         gameboard.searchEnemies();
-        gameboard = gameboard.deleteCapturedEnemies2(gameboard);
+        gameboard.delEnem();
 
         takenPiecesPanel.updateCounts(gameboard);
         takenPiecesPanel.checkWinCondition(gameboard);
@@ -183,7 +183,7 @@ public class MyGameTable extends Observable{
             @Override
             protected Move doInBackground() throws Exception {
                 //для более глубокого поиска нужно альфа-бетта отсечение!
-                final MoveStrategy miniMax = new MiniMax(2);
+                final MoveStrategy miniMax = new MiniMax(1);
                 final Move bestMove = miniMax.execute(MyGameTable.get().getGameBoard());
                 return bestMove;
             }
@@ -263,7 +263,7 @@ public class MyGameTable extends Observable{
                                     gameboard.searchEnemies();
                                     // Если найдены захваченные фигуры противника, то снимаем их с доски
                                     //gameboard = transition.deleteCapturedEnemies(gameboard);
-                                    gameboard = gameboard.deleteCapturedEnemies(gameboard);
+                                    gameboard.delEnem();
                                     //boardPanel.drawBoard(gameboard);
                                     if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()) {
                                         gameOver = true;
