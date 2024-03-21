@@ -151,7 +151,7 @@ public class MyGameTable extends Observable{
 //            gameOver = true;
 //            System.out.println(gameOver);
 //        }
-        //boardPanel.drawBoard(gameboard);
+        boardPanel.drawBoard(gameboard);
 
         //gameboard.deleteCapturedEnemies(gameboard);
         setChanged();
@@ -191,7 +191,7 @@ public class MyGameTable extends Observable{
                     MyGameTable.get().updateComputerMove(bestMove);
                     MyGameTable.get().updateGameBoard(MyGameTable.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
                     //MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
-                    MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().gameboard);
+                    //MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().gameboard);
                     MyGameTable.get().moveMadeUpdate(PlayerType.COMPUTER);
 
                 } catch (InterruptedException e) {

@@ -4,6 +4,7 @@ import OberegEngine.Board.Board;
 import OberegEngine.Board.Move;
 import OberegEngine.Pieces.Piece;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -36,7 +37,7 @@ public abstract class Player {
         final Board transmitonBoard = move.execute();
         return new MoveTransition(transmitonBoard, move, MoveStatus.DONE);
     }
-    public abstract Collection<Piece> getActivePieces();
+    public abstract ArrayList<Piece> getActivePieces();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
 

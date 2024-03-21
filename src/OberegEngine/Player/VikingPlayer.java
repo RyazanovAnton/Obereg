@@ -4,15 +4,16 @@ import OberegEngine.Board.Board;
 import OberegEngine.Board.Move;
 import OberegEngine.Pieces.Piece;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class VikingPlayer extends Player{
     public VikingPlayer(final Board board,
-                       final Collection<Move> vikingStandardLegalMoves) {
+                       final ArrayList<Move> vikingStandardLegalMoves) {
         super(board, vikingStandardLegalMoves);
     }
     @Override
-    public Collection<Piece> getActivePieces() {
+    public ArrayList<Piece> getActivePieces() {
         return this.board.getVikingPieces();
     }
     @Override

@@ -3,6 +3,7 @@ package OberegEngine.Player.AI;
 import OberegEngine.Board.Board;
 import OberegEngine.Board.Move;
 import OberegEngine.Pieces.Piece;
+import OberegEngine.Player.Alliance;
 import OberegEngine.Player.MoveTransition;
 
 import java.util.ArrayList;
@@ -33,11 +34,20 @@ public class MiniMax implements MoveStrategy {
         int numMoves = board.currentPlayer().getLegalMoves().size();
         ArrayList<Move> legals = new ArrayList<>(board.currentPlayer().getLegalMoves());
         Board tmpBoard = new Board(board);
+        ArrayList<Piece> tmpCurrentPiece = new ArrayList<>();
+        ArrayList<Piece> tmpOpponentPiece = new ArrayList<>();
+        tmpCurrentPiece = board.copyArr(board.currentPlayer().getActivePieces());
+        tmpOpponentPiece = board.copyArr(board.currentPlayer().getOpponent().getActivePieces());
         for (int i = 0; i<legals.size(); ++i){
             board.updateBoard(tmpBoard);
+//            board.slavPieces = board.copyArr(tmpCurrentPiece);
+//            board.vikingPieces = board.copyArr(tmpOpponentPiece);
+
+
             Move move = legals.get(i);
             board.resetEnem();
-            //for (Piece piece : board.)
+
+
 //TODO
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             board.updateBoard(moveTransition.getTransitionBoard());
@@ -57,8 +67,16 @@ public class MiniMax implements MoveStrategy {
             }
         }
         board.updateBoard(tmpBoard);
+//        board.slavPieces = board.copyArr(tmpCurrentPiece);
+//        board.vikingPieces = board.copyArr(tmpOpponentPiece);
+
+
+
+
         System.out.println(bestMove.toString());
         final long executionTime = System.currentTimeMillis() - startTime;
+        System.out.println(highestSeenValue);
+        System.out.println(lowestSeenValue);
         return bestMove;
     }
 
@@ -68,6 +86,7 @@ public class MiniMax implements MoveStrategy {
             return this.boardEvaluator.evaluate(board,  depth);
         }
         int lowestSeenValue = Integer.MAX_VALUE;
+        board.resetEnem();
         for(final Move move : board.currentPlayer().getLegalMoves()){
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if(moveTransition.getMoveStatus().isDone()){
@@ -86,6 +105,7 @@ public class MiniMax implements MoveStrategy {
         }
         int highestSeenValue = Integer.MIN_VALUE;
         for(final Move move : board.currentPlayer().getLegalMoves()){
+            board.resetEnem();
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if(moveTransition.getMoveStatus().isDone()){
                 final int currentValue = min(moveTransition.getTransitionBoard(), depth -1 );

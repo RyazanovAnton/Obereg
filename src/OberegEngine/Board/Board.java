@@ -13,8 +13,8 @@ import java.util.*;
 
 public class Board{
     private ArrayList<Tile> gameBoard;
-    private ArrayList<Piece> slavPieces;
-    private ArrayList<Piece> vikingPieces;
+    public ArrayList<Piece> slavPieces;
+    public ArrayList<Piece> vikingPieces;
     private SlavPlayer slavPlayer;
     private VikingPlayer vikingPlayer;
     private Player currentPlayer;
@@ -26,12 +26,14 @@ public class Board{
         this.gameBoard = createGameBoard(builder);
         this.slavPieces = calculateActivePieces(this.gameBoard, Alliance.SLAVS);
         this.vikingPieces = calculateActivePieces(this.gameBoard, Alliance.VIKINGS);
-        final Collection<Move> slavsStandardLegalMoves = calculateLegalMoves(this.slavPieces);
-        final Collection<Move> vikingStandardLegalMoves = calculateLegalMoves(this.vikingPieces);
+        final ArrayList<Move> slavsStandardLegalMoves = calculateLegalMoves(this.slavPieces);
+        final ArrayList<Move> vikingStandardLegalMoves = calculateLegalMoves(this.vikingPieces);
         this.slavPlayer = new SlavPlayer(this, slavsStandardLegalMoves);
         this.vikingPlayer = new VikingPlayer(this, vikingStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.slavPlayer, this.vikingPlayer);
     }
+
+
 
     @Override
     public String toString(){
@@ -71,11 +73,11 @@ public class Board{
         return this.currentPlayer;
     }
     // Получение коллекции викингов
-    public Collection<Piece> getVikingPieces(){
+    public ArrayList<Piece> getVikingPieces(){
         return this.vikingPieces;
     }
     // Получение коллекции варягов
-    public Collection<Piece> getSlavPieces(){
+    public ArrayList<Piece> getSlavPieces(){
         return this.slavPieces;
     }
     // Проврка наличия врагов слева
@@ -130,8 +132,8 @@ public class Board{
         return false;
     }
     // Создание коллекции допустимых ходов для альянса
-    private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) {
-        final List<Move> legalMoves = new ArrayList<>();
+    private ArrayList<Move> calculateLegalMoves(final Collection<Piece> pieces) {
+        final ArrayList<Move> legalMoves = new ArrayList<>();
         for(final Piece piece : pieces){
             legalMoves.addAll(piece.calculateLegalMoves(this));
         }
@@ -351,6 +353,16 @@ public class Board{
         else return false;
     }
 
+    public ArrayList<Piece> copyArr(ArrayList<Piece> oldArr){
+        ArrayList<Piece> copyArr = new ArrayList<>();
+        copyArr = (ArrayList<Piece>) oldArr.clone();
+        return copyArr;
+    }
+//    public void updatePieceArr(final Board board){
+//        ArrayList<Piece> copyArr = new ArrayList<>();
+//
+//        this.slavPieces = board.co
+//    }
     public void updateBoard(final Board board){
         this.gameBoard = board.gameBoard;
         this.slavPlayer = board.slavPlayer;
@@ -410,14 +422,14 @@ public class Board{
     }
 
     public void resetEnem() {
-        if(this.currentPlayer.getOpponent().getAlliance().isVikings()){
+        if(this.currentPlayer.getAlliance().isVikings()){
             for (Piece piece : slavPieces) {
                 if(piece.getEnemies()){
                     piece.resetEnem();
                 }
                 }
             }
-        else if(this.currentPlayer.getOpponent().getAlliance().isSlavs()){
+        else if(this.currentPlayer.getAlliance().isSlavs()){
             for(Piece piece : vikingPieces){
                 if(piece.getEnemies()){
                     piece.resetEnem();
