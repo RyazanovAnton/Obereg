@@ -77,15 +77,20 @@ public class Move {
         builder.setPiece(this.movedPiece.movePiece(this));
         for (Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()){
             // Расстановка всех фигур противника, если они не были захвачены в этот ход
-            if(!piece.getEnemies()){
-                builder.setPiece(piece);
-            }
+            builder.setPiece(piece);
         }
         // Переход хода к противнику
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         Board newBoard = builder.build();
         newBoard.searchEnemies();
         newBoard.delEnem();
+<<<<<<< HEAD
+        newBoard.calculateLegalMoves(this.board.vikingPieces);
+        newBoard.calculateLegalMoves(this.board.slavPieces);
+        newBoard.getAllLegalMoves();
+//        newBoard.currentPlayer().getLegalMoves();
+=======
+>>>>>>> 64cf260207924081025e653d37dc71fc6dc480f9
 
         return newBoard;
     }

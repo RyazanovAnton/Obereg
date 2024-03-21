@@ -132,7 +132,11 @@ public class Board{
         return false;
     }
     // Создание коллекции допустимых ходов для альянса
+<<<<<<< HEAD
+    public ArrayList<Move> calculateLegalMoves(final Collection<Piece> pieces) {
+=======
     private ArrayList<Move> calculateLegalMoves(final Collection<Piece> pieces) {
+>>>>>>> 64cf260207924081025e653d37dc71fc6dc480f9
         final ArrayList<Move> legalMoves = new ArrayList<>();
         for(final Piece piece : pieces){
             legalMoves.addAll(piece.calculateLegalMoves(this));
@@ -428,7 +432,15 @@ public class Board{
         for(Piece piece : toDelete){
             slavPieces.remove(piece);
             vikingPieces.remove(piece);
+//            toDelete.remove(piece);
         }
+<<<<<<< HEAD
+        System.out.println(toDelete);
+        toDelete.clear();
+        System.out.println(toDelete);
+
+=======
+>>>>>>> 64cf260207924081025e653d37dc71fc6dc480f9
     }
 
     public void resetEnem() {

@@ -11,18 +11,34 @@ import java.util.Collections;
 // У класса 2 наследника SlavPlayer / VikingPlayer
 public abstract class Player {
     protected final Board board;
-    protected final Collection<Move> legalMoves;
+    protected ArrayList<Move> legalMoves;
     Player(final Board board,
-           final Collection<Move> playerLegals) {
+           final ArrayList<Move> playerLegals) {
         this.board = board;
-        this.legalMoves = Collections.unmodifiableCollection(playerLegals);
+        this.legalMoves = playerLegals;
+    }
+    public ArrayList<Move> setLegalMoves(Board board){
+        if(board.currentPlayer().getAlliance().isSlavs()){
+            this.legalMoves = board.calculateLegalMoves(this.board.slavPieces);
+        } else if (board.currentPlayer().getAlliance().isVikings()){
+            this.legalMoves = board.calculateLegalMoves(this.board.vikingPieces);
+        }
+        return this.legalMoves;
     }
     // Коллекция доступных ходов для игрока
-    public Collection<Move> getLegalMoves(){
+    public ArrayList<Move> getLegalMoves(){
+
         return this.legalMoves;
     }
     // Проверка доступности действия
     public boolean isLegalMove(final Move move){
+//        if(move.getMovedPiece().getPieceAlliance().isVikings()){
+//            System.out.println("here");
+//            legalMoves = board.calculateLegalMoves(this.board.vikingPieces);
+//        } else if (move.getMovedPiece().getPieceAlliance().isSlavs()){
+//            legalMoves = board.calculateLegalMoves(this.board.slavPieces);
+//        }
+//        System.out.println(this.legalMoves.contains(move));
         return this.legalMoves.contains(move);
     }
     // Расстановка фигур на доске по результатам хода

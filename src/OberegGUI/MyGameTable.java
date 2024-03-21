@@ -240,6 +240,9 @@ public class MyGameTable extends Observable{
                                     sourceTile = null;
                                 }
                             } else {
+                                humanMovedPiece.calculateLegalMoves(gameboard);
+                               // System.out.println(humanMovedPiece.calculateLegalMoves(gameboard));
+
                                 // Второе нажатие ЛКМ
                                 destinationTile = gameboard.getTile((tileId));
                                 final Move move = Move.MoveFactory.createMove(gameboard,
