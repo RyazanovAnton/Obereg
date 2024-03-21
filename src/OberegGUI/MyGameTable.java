@@ -142,16 +142,14 @@ public class MyGameTable extends Observable{
         return this.boardPanel;
     }
     private void moveMadeUpdate(final PlayerType playerType){
-        gameboard.searchEnemies();
-        gameboard.delEnem();
 
+        boardPanel.drawBoard(gameboard);
         takenPiecesPanel.updateCounts(gameboard);
         takenPiecesPanel.checkWinCondition(gameboard);
-//        if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()){
-//            gameOver = true;
-//            System.out.println(gameOver);
-//        }
-        boardPanel.drawBoard(gameboard);
+
+        //        gameboard.searchEnemies();
+//        gameboard.delEnem();
+
 
         //gameboard.deleteCapturedEnemies(gameboard);
         setChanged();
@@ -176,7 +174,7 @@ public class MyGameTable extends Observable{
             @Override
             protected Move doInBackground() throws Exception {
                 //для более глубокого поиска нужно альфа-бетта отсечение!
-                final MoveStrategy miniMax = new MiniMax(3);
+                final MoveStrategy miniMax = new MiniMax(2);
                 final Move bestMove = miniMax.execute(MyGameTable.get().getGameBoard());
                 return bestMove;
             }
@@ -254,10 +252,13 @@ public class MyGameTable extends Observable{
                                     // Если ход был сделан, то делаем перестановку фигуры на новую позицию и переход хода
                                     gameboard = transition.getTransitionBoard();
                                     // Ищем на новой доске захваченных противников
-                                    gameboard.searchEnemies();
+                                    //gameboard.searchEnemies();
+
                                     // Если найдены захваченные фигуры противника, то снимаем их с доски
                                     //gameboard = transition.deleteCapturedEnemies(gameboard);
-                                    gameboard.delEnem();
+                                    //gameboard.delEnem();
+//                                    gameboard = gameboard.deleteCapturedEnemies(gameboard);
+                                    //boardPanel.drawBoard(gameboard);
                                     //boardPanel.drawBoard(gameboard);
                                     if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()) {
                                         gameOver = true;
@@ -278,8 +279,7 @@ public class MyGameTable extends Observable{
                             public void run() {
                                 if(!gameOver){
                                     if(gameSetup.isAIPlayer(gameboard.currentPlayer())){
-                                        //gameboard.searchEnemies();
-//                                    gameboard.deleteCapturedEnemies();
+
                                         MyGameTable.get().moveMadeUpdate(PlayerType.HUMAN);
 
                                     }
@@ -295,7 +295,7 @@ public class MyGameTable extends Observable{
 //                                    gameOver = true;
 //                                    System.out.println(gameOver);
 //                                }
-                                boardPanel.drawBoard(gameboard);
+                                //boardPanel.drawBoard(gameboard);
 
 
                             }
@@ -305,7 +305,7 @@ public class MyGameTable extends Observable{
 //                        // после чего рисуем новую доску на экране
                     takenPiecesPanel.updateCounts(gameboard);
                     takenPiecesPanel.checkWinCondition(gameboard);
-                    //boardPanel.drawBoard(gameboard);
+                    boardPanel.drawBoard(gameboard);
                 }
 
                 @Override

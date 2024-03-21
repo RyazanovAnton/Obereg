@@ -276,6 +276,10 @@ public class Board{
                     if (this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())) &&
                             this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
+                        if(this.currentPlayer().getAlliance().isSlavs()){
+                            System.out.println("find horiz");
+                        }
+
                     }
                 }
                 // Проверка не зажат ли Воин на поле двумя врагами по вертикали
@@ -284,6 +288,10 @@ public class Board{
                     if (this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition())) &&
                             this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
+                        if(this.currentPlayer().getAlliance().isSlavs()){
+                            System.out.println("find vert");
+                        }
+
                     }
                 }
             }
@@ -402,6 +410,7 @@ public class Board{
         if(this.currentPlayer.getOpponent().getAlliance().isVikings()){
             for (Piece piece : slavPieces) {
                 if (piece.getEnemies()) {
+                    System.out.println("Trying to Del slavs");
                     this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
                     toDelete.add(piece);
                 }
@@ -410,6 +419,7 @@ public class Board{
         } else if(this.currentPlayer.getOpponent().getAlliance().isSlavs()){
             for(Piece piece : vikingPieces){
                 if(piece.getEnemies()){
+                    System.out.println("Trying to Del vikings");
                     this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
                     toDelete.add(piece);
                 }
@@ -422,20 +432,31 @@ public class Board{
     }
 
     public void resetEnem() {
-        if(this.currentPlayer.getAlliance().isVikings()){
-            for (Piece piece : slavPieces) {
+        for (Piece piece : slavPieces) {
                 if(piece.getEnemies()){
                     piece.resetEnem();
                 }
-                }
-            }
-        else if(this.currentPlayer.getAlliance().isSlavs()){
-            for(Piece piece : vikingPieces){
-                if(piece.getEnemies()){
-                    piece.resetEnem();
-                }
-            }
         }
+        for(Piece piece : vikingPieces){
+                if(piece.getEnemies()){
+                    piece.resetEnem();
+                }
+        }
+
+//        if(this.currentPlayer.getAlliance().isVikings()){
+//            for (Piece piece : slavPieces) {
+//                if(piece.getEnemies()){
+//                    piece.resetEnem();
+//                }
+//                }
+//            }
+//        else if(this.currentPlayer.getAlliance().isSlavs()){
+//            for(Piece piece : vikingPieces){
+//                if(piece.getEnemies()){
+//                    piece.resetEnem();
+//                }
+//            }
+//        }
     }
 
 

@@ -28,12 +28,9 @@ public abstract class Player {
     // Расстановка фигур на доске по результатам хода
     public MoveTransition makeMove(final Move move){
         if(!isLegalMove(move)){
+            System.out.println("Player.makeMove Illegal");
             return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
         }
-//        if (!gameOver){
-//            return new MoveTransition(this.board, move, MoveStatus.GAME_OVER);
-//        }
-
         final Board transmitonBoard = move.execute();
         return new MoveTransition(transmitonBoard, move, MoveStatus.DONE);
     }
