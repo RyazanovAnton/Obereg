@@ -83,14 +83,12 @@ public class Move {
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         Board newBoard = builder.build();
         newBoard.searchEnemies();
-        newBoard.delEnem();
-<<<<<<< HEAD
-        newBoard.calculateLegalMoves(this.board.vikingPieces);
-        newBoard.calculateLegalMoves(this.board.slavPieces);
-        newBoard.getAllLegalMoves();
+        newBoard = newBoard.deleteCapturedEnemies(newBoard);
+
+//        newBoard.calculateLegalMoves(this.board.vikingPieces);
+//        newBoard.calculateLegalMoves(this.board.slavPieces);
+//        newBoard.getAllLegalMoves();
 //        newBoard.currentPlayer().getLegalMoves();
-=======
->>>>>>> 64cf260207924081025e653d37dc71fc6dc480f9
 
         return newBoard;
     }

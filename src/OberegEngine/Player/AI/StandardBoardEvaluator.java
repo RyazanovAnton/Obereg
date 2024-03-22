@@ -22,12 +22,12 @@ public int evaluate(final Board board, final int depth) {
     for(int i=0; i< BoardUtils.NUM_TILES; ++i){
         if(board.getTile(i).isTileOccupied()){
             if(board.getTile(i).getPiece() instanceof King){
-                pieceValueScore += 2;
+                pieceValueScore += 10000;
             } else if (board.getTile(i).getPiece() instanceof Warrior){
                 if(board.getTile(i).getPiece().getPieceAlliance().isSlavs()){
-                    pieceValueScore += 1;
+                    pieceValueScore += 1000;
                 } else {
-                    pieceValueScore += -1;
+                    pieceValueScore += -1000;
                 }
 
             }
