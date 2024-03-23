@@ -9,6 +9,7 @@ import OberegEngine.Pieces.Piece;
 import OberegEngine.Player.AI.MiniMax;
 import OberegEngine.Player.AI.MoveStrategy;
 import OberegEngine.Player.MoveTransition;
+import OberegEngine.Player.Player;
 import TODOLater.MainMenuWindow;
 
 import javax.imageio.ImageIO;
@@ -25,11 +26,11 @@ import java.util.concurrent.ExecutionException;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 // Игровое поле
-public class GameTable extends Observable{
+public class GameWithSLavsAI extends Observable{
 
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
-    private final GameSetup gameSetup;
+//    private final GameSetup gameSetup;
     private Board gameboard;
     private Tile sourceTile;
     private Tile destinationTile;
@@ -41,25 +42,28 @@ public class GameTable extends Observable{
     private static String defaultPieceImagesPath = "art/pieces/plain/";
     private final Color darkTileColor = Color.decode("#593E1A");
     // SINGLETON
-    private static final  GameTable INSTANCE = new GameTable();
+    private static final GameWithSLavsAI INSTANCE = new GameWithSLavsAI();
     public static boolean gameOver = false;
+
     // Конструктор для стартового отображения
     // игрового поля с расставленными фигурами
-    public GameTable() {
+    public GameWithSLavsAI() {
+        myMusic startBattle = new myMusic("./audio/startbattle.wav");
+        startBattle.musicOn();
         this.gameFrame = new JFrame("Obereg v.1.0");
-        this.gameFrame.setLayout(null);
-        this.gameFrame.setBounds(200,100,1280,755);
         try {
             this.gameFrame.setIconImage(ImageIO.read(new File("./images/icon.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        myMusic startbattle = new myMusic("./audio/startbattle.wav");
-        startbattle.musicOn();
-
-
-
+        this.gameFrame.setLayout(null);
+        this.gameFrame.setResizable(false);
+        this.gameFrame.setBounds(200,100,1294,755);
+        this.gameboard = Board.createStandardBoard();
+        this.boardPanel = new GameWithSLavsAI.BoardPanel();
+        this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
+        this.gameFrame.getContentPane().add(takenPiecesPanel);
+        this.gameFrame.getContentPane().add(boardPanel);
         this.gameFrame.addWindowListener(new WindowListener() {
 
             @Override
@@ -76,68 +80,45 @@ public class GameTable extends Observable{
                 }
             }
             @Override
-            public void windowOpened(WindowEvent event) {
-            }
+            public void windowOpened(WindowEvent event) {}
             @Override
-            public void windowClosed(WindowEvent event) {
-            }
+            public void windowClosed(WindowEvent event) {}
             @Override
-            public void windowIconified(WindowEvent e) {
-            }
+            public void windowIconified(WindowEvent e) {}
             @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
+            public void windowDeiconified(WindowEvent e) {}
             @Override
-            public void windowActivated(WindowEvent e) {
-            }
+            public void windowActivated(WindowEvent e) {}
             @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
+            public void windowDeactivated(WindowEvent e) {}
         });
 
-        this.gameboard = Board.createStandardBoard();
-        this.boardPanel = new GameTable.BoardPanel();
-//        final JMenuBar tableMenuBar = createTableMenuBar();
-//        this.gameFrame.setJMenuBar(tableMenuBar);
-        this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
-        //this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
-
-
-        //this.gameFrame.add(this.takenPiecesPanel, BorderLayout.EAST);
-        this.gameSetup = new GameSetup(gameFrame, true);
-
-
         JButton jbBackToMainMenu = new JButton("Back");
-        jbBackToMainMenu.setBounds(50,600,150,50);
+        jbBackToMainMenu.setBounds(50,550,180,90);
+        jbBackToMainMenu.setOpaque(false);
         this.gameFrame.getContentPane().add(jbBackToMainMenu);
 
         jbBackToMainMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startbattle.musicOff();
+                startBattle.musicOff();
                 gameFrame.dispose();
-                MainMenuWindow backToMM = new MainMenuWindow();
+                new MainMenuWindow();
             }
         });
-
-
-        this.gameFrame.getContentPane().add(boardPanel);
-
 
         ImageIcon mainMenuBG = new ImageIcon("./images/gamewindowbg.jpg");
         JLabel jlMainBG = new JLabel(mainMenuBG);
         jlMainBG.setBounds(0,0,1280,720);
+
         this.gameFrame.getContentPane().add(jlMainBG);
-
- //       this.gameFrame.pack();
-
-
-
         this.addObserver(new TableGameAIWatcher());
         this.gameFrame.setVisible(true);
-        this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     }
+
+
+
     // Служебный класс для создания сетки 9х9, куда будут добавляться тайлы
     private class BoardPanel extends JPanel {
         final List<TilePanel> boardTiles;
@@ -150,19 +131,10 @@ public class GameTable extends Observable{
                 this.boardTiles.add(tilePanel);
                 this.add(tilePanel);
                 this.setOpaque(false);
-
             }
-            //setPreferredSize(BOARD_PANEL_DIMENSION);
             validate();
         }
 
-//        @Override
-//        protected void paintComponent(Graphics g) {
-//            Image bgImage = new ImageIcon("./images/boardbg.jpg").getImage();
-//            super.paintComponent(g);
-//            g.drawImage(bgImage, 0, 0, null);
-//
-//        }
 
         // Метод для отрисовки доски, состоящей из 81 тайла
         public void drawBoard(final Board board) {
@@ -176,38 +148,15 @@ public class GameTable extends Observable{
         }
     }
     //TODO
-    private JMenuBar createTableMenuBar(){
-        final JMenuBar tableMenuBar = new JMenuBar();
-        tableMenuBar.add(createOptionsMenu());
-        return tableMenuBar;
-    }
-    private JMenu createOptionsMenu(){
-        final JMenu optionsMenu = new JMenu("Options");
-        final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game");
-        setupGameMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameTable.get().getGameSetup().promptUser();
-                GameTable.get().setupUpdate(GameTable.get().getGameSetup());
-            }
-        });
-        optionsMenu.add(setupGameMenuItem);
-        return optionsMenu;
-    }
+
     public void show(){
-        GameTable.get().getBoardPanel().drawBoard(GameTable.get().getGameBoard());
-        GameTable.get().getTakenPiecesPanel().updateCounts(gameboard);
-        GameTable.get().getTakenPiecesPanel().checkWinCondition(gameboard);
+        GameWithSLavsAI.get().getBoardPanel().drawBoard(GameWithSLavsAI.get().getGameBoard());
+        //GameWithSLavsAI.get().getTakenPiecesPanel().updateCounts(gameboard);
+        GameWithSLavsAI.get().getTakenPiecesPanel().checkWinCondition(gameboard);
+        //GameWithSLavsAI.get().getTakenPiecesPanel().currentMove(gameboard);
     }
-    public static GameTable get(){
+    public static GameWithSLavsAI get(){
         return INSTANCE;
-    }
-    private GameSetup getGameSetup(){
-        return this.gameSetup;
-    }
-    private void setupUpdate(final GameSetup gameSetup){
-        setChanged();
-        notifyObservers(gameSetup);
     }
     private Board getGameBoard(){
         return this.gameboard;
@@ -225,32 +174,33 @@ public class GameTable extends Observable{
     private BoardPanel getBoardPanel(){
         return this.boardPanel;
     }
-    private void moveMadeUpdate(final PlayerType playerType){
+    private void moveMadeUpdate(final Player player){
         boardPanel.drawBoard(gameboard);
         takenPiecesPanel.updateCounts(gameboard);
         takenPiecesPanel.checkWinCondition(gameboard);
+        takenPiecesPanel.currentMove(gameboard);
         setChanged();
-        notifyObservers(playerType);
+        notifyObservers(player);
     }
     private static class TableGameAIWatcher implements Observer{
         @Override
         public void update(Observable o, Object arg) {
-            if (GameTable.get().getGameSetup().isAIPlayer(GameTable.get().getGameBoard().currentPlayer())){
+            if (GameWithSLavsAI.get().getGameBoard().currentPlayer().getAlliance().isSlavs()){
                 //TODO create an AI thread
                 // execute AI work
-                final AIThinkTank thinkTank = new AIThinkTank();
+                final AIBrains thinkTank = new AIBrains();
                 thinkTank.execute();
             }
         }
-        private static class AIThinkTank extends SwingWorker<Move, String>{
+        private static class AIBrains extends SwingWorker<Move, String>{
             //у этого класса есть возможность деалать перемещения и корректировать строки
-            private AIThinkTank(){
+            private AIBrains(){
             }
             @Override
             protected Move doInBackground() throws Exception {
                 //для более глубокого поиска нужно альфа-бетта отсечение!
                 final MoveStrategy miniMax = new MiniMax(2);
-                final Move bestMove = miniMax.execute(GameTable.get().getGameBoard());
+                final Move bestMove = miniMax.execute(GameWithSLavsAI.get().getGameBoard());
                 return bestMove;
             }
             @Override
@@ -258,9 +208,9 @@ public class GameTable extends Observable{
                 //когда поток SwingWorker'a завершен - проводится работа по очистке в этом методе
                 try {
                     final Move bestMove = get();
-                    GameTable.get().updateComputerMove(bestMove);
-                    GameTable.get().updateGameBoard(GameTable.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
-                    GameTable.get().moveMadeUpdate(PlayerType.COMPUTER);
+                    GameWithSLavsAI.get().updateComputerMove(bestMove);
+                    GameWithSLavsAI.get().updateGameBoard(GameWithSLavsAI.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
+                    GameWithSLavsAI.get().moveMadeUpdate(GameWithSLavsAI.get().getGameBoard().currentPlayer().getOpponent());
 
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -270,17 +220,11 @@ public class GameTable extends Observable{
             }
         }
     }
-
-    public enum PlayerType {
-        HUMAN,
-        COMPUTER
-    }
-
     // Класс, на котором могут размещаться фигуры
     private class TilePanel extends JPanel {
         private final int tileId;
 
-        TilePanel(final GameTable.BoardPanel boardPanel,
+        TilePanel(final GameWithSLavsAI.BoardPanel boardPanel,
                   final int tileId) {
             super(new GridBagLayout());
             this.tileId = tileId;
@@ -338,21 +282,19 @@ public class GameTable extends Observable{
                         @Override
                         public void run() {
                             if(!gameOver){
-//                                if(gameboard.currentPlayer().getAlliance().isSlavs()){
-//                                    GameTable.get().moveMadeUpdate(PlayerType.HUMAN);
-//                                }
-
-                                if(gameSetup.isAIPlayer(gameboard.currentPlayer())){
-                                    GameTable.get().moveMadeUpdate(PlayerType.HUMAN);
+                                if(gameboard.currentPlayer().getAlliance().isSlavs()){
+                                    GameWithSLavsAI.get().moveMadeUpdate(GameWithSLavsAI.get().getGameBoard().currentPlayer().getOpponent());
                                 }
+
                             }
                         }
                     });
 
-//                        // Обновляем счетчики и проверяем условия победы,
-//                        // после чего рисуем новую доску на экране
-                    takenPiecesPanel.updateCounts(gameboard);
+                        // Обновляем счетчики и проверяем условия победы,
+                        // после чего рисуем новую доску на экране
+                    //takenPiecesPanel.updateCounts(gameboard);
                     takenPiecesPanel.checkWinCondition(gameboard);
+                    //takenPiecesPanel.currentMove(gameboard);
                     boardPanel.drawBoard(gameboard);
                 }
 
@@ -439,21 +381,8 @@ public class GameTable extends Observable{
             }
             return Collections.emptyList();
         }
-        // Назначение свойств тайла (цвет / граница)
+        // Ставим свойства тайла (прозрачность)
         private void assignTileColor() {
-//            for(int i = 0; i < BoardUtils.NUM_TILES; i++){
-//                try {
-//                    ImageIcon image = new ImageIcon(ImageIO.read(new File("art/tiles/tile" + i + ".png")));
-//                    add(new JLabel(image, JLabel.CENTER));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-            this.setOpaque(false);
-
-            //this.setBackground(darkTileColor);
-           // this.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-        }
+            this.setOpaque(false);}
     }
 }

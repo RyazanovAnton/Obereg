@@ -16,11 +16,7 @@ public class GameWindow extends JFrame {
         this.setLayout(null);
         this.setBounds(200,100,1280,720);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        try {
-            this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./images/gamewindowbg.jpg")))));
-        } catch (IOException ex1) {
-            throw new RuntimeException(ex1);
-        }
+
 
         this.pack();
         this.setVisible(true);

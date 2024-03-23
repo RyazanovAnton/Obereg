@@ -1,4 +1,4 @@
-import OberegGUI.GameTable;
+import OberegGUI.GameWithSLavsAI;
 
 public class Tests {
     public static void main(String[] args) {
@@ -14,7 +14,7 @@ public class Tests {
        // MyGameTable.get().show();
 
 
-        GameTable.get().show();
+        GameWithSLavsAI.get().show();
 
         //GameWindow gw1 = new GameWindow();
 

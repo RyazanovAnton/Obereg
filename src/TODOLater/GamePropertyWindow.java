@@ -1,7 +1,8 @@
 package TODOLater;
 
 import Music.myMusic;
-import OberegGUI.GameTable;
+import OberegGUI.GameWithSLavsAI;
+import OberegGUI.GameType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class GamePropertyWindow extends JFrame {
+
+    public GameType gameSetup;
+
     public GamePropertyWindow(){
         this.setBounds(200,100,1280,720);
         //this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -143,7 +147,8 @@ public class GamePropertyWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 vikTheme.musicOff();
                 dispose();
-                GameTable.get().show();
+                gameSetup = GameType.SLAVS_AI;
+                GameWithSLavsAI.get().show();
             }
         });
 
