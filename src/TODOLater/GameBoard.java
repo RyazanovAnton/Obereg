@@ -11,7 +11,7 @@ public class GameBoard extends JFrame {
     private final Color darkTileColor = Color.decode("#593E1A");
     public GameBoard(){
         this.setBounds(200,100,620,620);
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
         this.setLayout(null);
         this.setVisible(true);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);

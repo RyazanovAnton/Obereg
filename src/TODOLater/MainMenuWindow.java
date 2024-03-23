@@ -93,24 +93,6 @@ public class MainMenuWindow extends JFrame  {
 
 
     }
-//    public static void playMusic(String location){
-//        try{
-//            File musicPath = new File(location);
-//
-//            if(musicPath.exists()){
-//                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(musicPath);
-//                Clip myClip =AudioSystem.getClip();
-//                myClip.open(audioInputStream);
-//                myClip.start();
-//            }
-//            else{
-//                System.out.println("Can't find the file!");
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//
-//    }
 
 }
 

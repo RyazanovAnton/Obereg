@@ -9,12 +9,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class GameSetup extends JDialog {
+class MyGameSetup extends JDialog {
     private PlayerType slavPlayerType;
     private PlayerType vikingPlayerType;
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
-    GameSetup(final JFrame frame,
+    MyGameSetup(final JFrame frame,
               final boolean modal) {
         super(frame, modal);
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
@@ -49,13 +49,13 @@ class GameSetup extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 slavPlayerType = slavComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
                 vikingPlayerType = vikingComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
-                GameSetup.this.setVisible(false);
+                MyGameSetup.this.setVisible(false);
             }
         });
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Cancel");
-                GameSetup.this.setVisible(false);
+                MyGameSetup.this.setVisible(false);
             }
         });
         myPanel.add(cancelButton);

@@ -1,7 +1,7 @@
 package TODOLater;
 
 import Music.myMusic;
-import OberegGUI.MyGameTable;
+import OberegGUI.GameTable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,7 +12,7 @@ import java.io.IOException;
 public class GamePropertyWindow extends JFrame {
     public GamePropertyWindow(){
         this.setBounds(200,100,1280,720);
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        //this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setLayout(null);
         this.setVisible(true);
         this.addWindowListener(new WindowListener() {
@@ -143,7 +143,7 @@ public class GamePropertyWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 vikTheme.musicOff();
                 dispose();
-                MyGameTable.get().show();
+                GameTable.get().show();
             }
         });
 
@@ -153,6 +153,13 @@ public class GamePropertyWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 rusTheme.musicOff();
                 dispose();
+//                GameSetup vikingAI = new GameSetup();
+//
+//                GameTable.PlayerType vikingPlayerType = GameTable.PlayerType.COMPUTER;
+//
+//
+
+
                 GameWindow gw1 = new GameWindow();
             }
         });

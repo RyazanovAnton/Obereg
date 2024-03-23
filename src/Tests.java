@@ -1,4 +1,4 @@
-import OberegGUI.MyGameTable;
+import OberegGUI.GameTable;
 
 public class Tests {
     public static void main(String[] args) {
@@ -11,7 +11,12 @@ public class Tests {
 
       //MyGameTable mt1 = new MyGameTable();
         //
-        MyGameTable.get().show();
+       // MyGameTable.get().show();
+
+
+        GameTable.get().show();
+
+        //GameWindow gw1 = new GameWindow();
 
        //MyGameTable.get().show();
 
