@@ -52,19 +52,18 @@ public class MiniMax implements MoveStrategy {
             }
         }
         board.updateBoard(tmpBoard);
-        System.out.println(bestMove.toString());
+        System.out.println("AI move: " + bestMove.toString());
         System.out.println(highestSeenValue);
+        System.out.println(lowestSeenValue);
         return bestMove;
     }
 
     public int min(final Board board, final int depth){
         board.resetEnem();
-        // depth == 0 -> gameOver
         if(depth == 0 ){
             return this.boardEvaluator.evaluate(board,  depth);
         }
         int lowestSeenValue = Integer.MAX_VALUE;
-
         for(final Move move : board.currentPlayer().getLegalMoves()){
             board.resetEnem();
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
@@ -79,7 +78,6 @@ public class MiniMax implements MoveStrategy {
     }
     public int max(final Board board, final int depth){
         board.resetEnem();
-        // depth == 0 -> gameOver
         if(depth == 0){
             return this.boardEvaluator.evaluate(board,  depth);
         }

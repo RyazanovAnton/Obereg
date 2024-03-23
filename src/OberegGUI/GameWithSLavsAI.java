@@ -199,7 +199,7 @@ public class GameWithSLavsAI extends Observable{
             @Override
             protected Move doInBackground() throws Exception {
                 //для более глубокого поиска нужно альфа-бетта отсечение!
-                final MoveStrategy miniMax = new MiniMax(2);
+                final MoveStrategy miniMax = new MiniMax(3);
                 final Move bestMove = miniMax.execute(GameWithSLavsAI.get().getGameBoard());
                 return bestMove;
             }

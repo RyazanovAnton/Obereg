@@ -28,25 +28,25 @@ public class Move {
         this.movedPiece = movedPiece;
         this.destinationCoordinate = destinationCoordinate;
     }
-
     @Override
     public String toString(){
         String line = "";
-        ArrayList<Integer> arr1 = coordinateToCanonical(movedPiece.getPiecePosition());
-        ArrayList<Integer> arr2 = coordinateToCanonical(destinationCoordinate);
-        line += arr1.get(0) + " " + arr1.get(1) + "\n";
-        line += arr2.get(0) + " " + arr2.get(1) + "\n";
+//        ArrayList<Integer> arr1 = coordinateToCanonical(movedPiece.getPiecePosition());
+//        ArrayList<Integer> arr2 = coordinateToCanonical(destinationCoordinate);
+//        line += arr1.get(0) + " " + arr1.get(1) + "\n";
+//        line += arr2.get(0) + " " + arr2.get(1);
+        if(movedPiece != null){
+            line += movedPiece.getPiecePosition() + " --> ";
+            line += destinationCoordinate;
+        }
         return line;
     }
-
-
-    // Конструктор для наследнка NullMove
+    // Конструктор для наследника NullMove
     private Move(final Board board,
                  final int destinationCoordinate){
         this.board = board;
         this.destinationCoordinate = destinationCoordinate;
         this.movedPiece = null;
-
     }
     // Получить доступ к игровому полю
     public Board getBoard(){
