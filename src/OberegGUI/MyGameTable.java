@@ -50,7 +50,6 @@ public class MyGameTable extends Observable{
     public MyGameTable() {
         this.gameFrame = new JFrame("Obereg");
         this.gameFrame.setLayout(new BorderLayout());
-        //this.gameFrame.setLayout(null);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
         this.gameboard = Board.createStandardBoard();
         this.boardPanel = new MyGameTable.BoardPanel();
@@ -142,20 +141,11 @@ public class MyGameTable extends Observable{
         return this.boardPanel;
     }
     private void moveMadeUpdate(final PlayerType playerType){
-
         boardPanel.drawBoard(gameboard);
         takenPiecesPanel.updateCounts(gameboard);
         takenPiecesPanel.checkWinCondition(gameboard);
-
-        //        gameboard.searchEnemies();
-//        gameboard.delEnem();
-
-
-        //gameboard.deleteCapturedEnemies(gameboard);
         setChanged();
         notifyObservers(playerType);
-        //System.out.println("Here!");
-
     }
     private static class TableGameAIWatcher implements Observer{
         @Override
@@ -182,14 +172,9 @@ public class MyGameTable extends Observable{
             public void done(){
                 //когда поток SwingWorker'a завершен - проводится работа по очистке в этом методе
                 try {
-
-
-
                     final Move bestMove = get();
                     MyGameTable.get().updateComputerMove(bestMove);
                     MyGameTable.get().updateGameBoard(MyGameTable.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
-                    //MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().getGameBoard());
-                    //MyGameTable.get().getBoardPanel().drawBoard(MyGameTable.get().gameboard);
                     MyGameTable.get().moveMadeUpdate(PlayerType.COMPUTER);
 
                 } catch (InterruptedException e) {
@@ -201,12 +186,10 @@ public class MyGameTable extends Observable{
         }
     }
 
-
     enum PlayerType {
         HUMAN,
         COMPUTER
     }
-
 
     // Класс, на котором могут размещаться фигуры
     private class TilePanel extends JPanel {
@@ -241,8 +224,6 @@ public class MyGameTable extends Observable{
                                 }
                             } else {
                                 humanMovedPiece.calculateLegalMoves(gameboard);
-                               // System.out.println(humanMovedPiece.calculateLegalMoves(gameboard));
-
                                 // Второе нажатие ЛКМ
                                 destinationTile = gameboard.getTile((tileId));
                                 final Move move = Move.MoveFactory.createMove(gameboard,
@@ -255,17 +236,8 @@ public class MyGameTable extends Observable{
                                     // Если ход был сделан, то делаем перестановку фигуры на новую позицию и переход хода
                                     gameboard = transition.getTransitionBoard();
                                     // Ищем на новой доске захваченных противников
-                                    //gameboard.searchEnemies();
-
-                                    // Если найдены захваченные фигуры противника, то снимаем их с доски
-                                    //gameboard = transition.deleteCapturedEnemies(gameboard);
-                                    //gameboard.delEnem();
-//                                    gameboard = gameboard.deleteCapturedEnemies(gameboard);
-                                    //boardPanel.drawBoard(gameboard);
-                                    //boardPanel.drawBoard(gameboard);
                                     if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()) {
                                         gameOver = true;
-
                                     }
                                 }
                                 // Снимаем все опции выбора
@@ -282,25 +254,9 @@ public class MyGameTable extends Observable{
                             public void run() {
                                 if(!gameOver){
                                     if(gameSetup.isAIPlayer(gameboard.currentPlayer())){
-
                                         MyGameTable.get().moveMadeUpdate(PlayerType.HUMAN);
-
                                     }
                                 }
-
-//
-//                                takenPiecesPanel.updateCounts(gameboard);
-//                                takenPiecesPanel.checkWinCondition(gameboard);
-
-                                // Обновляем счетчики и проверяем условия победы,
-                                // после чего рисуем новую доску на экране
-//                                if (gameboard.checkVikingWinConditions() || gameboard.checkSlavWinConditions()){
-//                                    gameOver = true;
-//                                    System.out.println(gameOver);
-//                                }
-                                //boardPanel.drawBoard(gameboard);
-
-
                             }
                         });
 

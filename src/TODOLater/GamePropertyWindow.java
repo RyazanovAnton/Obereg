@@ -1,6 +1,7 @@
 package TODOLater;
 
 import Music.myMusic;
+import OberegGUI.MyGameTable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -99,9 +100,6 @@ public class GamePropertyWindow extends JFrame {
                         vikTheme.musicOff();
                         rusTheme.musicOn();
                     }
-
-                    //getContentPane().add(jlGamePropertyBG);
-                    //this.setContentPane(jlGamePropertyBG);
                 }
                 else if (e.getX()>740){
                     jlGamePropertyBG.setIcon(vikTeamChoice);
@@ -114,13 +112,9 @@ public class GamePropertyWindow extends JFrame {
                         rusTheme.musicOff();
                         vikTheme.musicOn();
                     }
-
-
-                    //getContentPane().add(jlGamePropertyBG);
                 }
                 else {
                     jlGamePropertyBG.setIcon(withoutChoiceBG);
-                    //getContentPane().add(jlGamePropertyBG);
                 }
             }
 
@@ -144,6 +138,14 @@ public class GamePropertyWindow extends JFrame {
 
             }
         });
+        jbVikTeam.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vikTheme.musicOff();
+                dispose();
+                MyGameTable.get().show();
+            }
+        });
 
 
         jbRusTeam.addActionListener(new ActionListener() {
@@ -155,70 +157,7 @@ public class GamePropertyWindow extends JFrame {
             }
         });
 
-//        jlGamePropertyBG.addMouseMotionListener(new MouseMotionListener() {
-//            @Override
-//            public void mouseDragged(MouseEvent e) {
-//
-//
-//            }
-//
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                if (e.getX() < 540){
-//                    jlGamePropertyBG.setIcon(rusTeamChoice);
-//                    getContentPane().add(jbRusTeam);
-//                    getContentPane().remove(jbVikTeam);
-//                    if (vikTheme.myClip==null){
-//                        rusTheme.musicOn();
-//                    }
-//                    else {
-//                        vikTheme.musicOff();
-//                        rusTheme.musicOn();
-//                    }
-//
-//                    //getContentPane().add(jlGamePropertyBG);
-//                    //this.setContentPane(jlGamePropertyBG);
-//                }
-//                else if (e.getX()>740){
-//                    jlGamePropertyBG.setIcon(vikTeamChoice);
-//                    getContentPane().add(jbVikTeam);
-//                    getContentPane().remove(jbRusTeam);
-//                    if (rusTheme.myClip==null){
-//                        vikTheme.musicOn();
-//                    }
-//                    else{
-//                        rusTheme.musicOff();
-//                        vikTheme.musicOn();
-//                    }
-//
-//
-//                    //getContentPane().add(jlGamePropertyBG);
-//                }
-//                else {
-//                    jlGamePropertyBG.setIcon(withoutChoiceBG);
-//                    //getContentPane().add(jlGamePropertyBG);
-//                }
-//
-//            }
-//        });
 
-
-
-
-
-
-
-//        jlReturnBack = new JLabel("Return Back");
-//        this.add(jlReturnBack);
-//        jlReturnBack.setBounds(50,50,100,50);
-
-
-
-
-
-
-
-//        this.pack();
         this.setResizable(false);
         this.setTitle("Obereg v1.0");
         try {
@@ -227,51 +166,6 @@ public class GamePropertyWindow extends JFrame {
             throw new RuntimeException(e);
         }
 
-//        this.addMouseMotionListener(new MouseMotionListener() {
-//            @Override
-//            public void mouseDragged(MouseEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                if (e.getX() < 500) {
-//                    try {
-//                        setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./resources/rusteam.jpg")))));
-//                    } catch (IOException ex) {
-//                        throw new RuntimeException(ex);
-//                    }
-//                } else if (e.getX() > 600) {
-//                    try {
-//                        setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./resources/vikteam.jpg")))));
-//                    } catch (IOException ex) {
-//                        throw new RuntimeException(ex);
-//                    }
-//                } else {
-//                    try {
-//                        setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./resources/chooiceofteam.jpg")))));
-//                    } catch (IOException ex) {
-//                        throw new RuntimeException(ex);
-//                    }
-//                }
-//
-//            }
-//        });
-
-//        MouseMotionListener mouseMotionListener = new MouseMotionListener() {
-//            @Override
-//            public void mouseDragged(MouseEvent e) {
-//
-//            }
-//
-//
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//
-//
-//
-//            }
-//        };
 
 
     }

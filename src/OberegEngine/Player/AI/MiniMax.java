@@ -24,36 +24,21 @@ public class MiniMax implements MoveStrategy {
 
     @Override
     public Move execute(Board board) {
-
-        //final long startTime = System.currentTimeMillis();
         Move bestMove = null;
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
         System.out.println(board.currentPlayer() + " thinking with depth = " + this.searchDepth);
-       // int numMoves = board.currentPlayer().getLegalMoves().size();
         ArrayList<Move> legals = new ArrayList<>(board.currentPlayer().getLegalMoves());
         Board tmpBoard = new Board(board);
-//        ArrayList<Piece> tmpCurrentPiece = new ArrayList<>();
-//        ArrayList<Piece> tmpOpponentPiece = new ArrayList<>();
-//        tmpCurrentPiece = board.copyArr(board.currentPlayer().getActivePieces());
-//        tmpOpponentPiece = board.copyArr(board.currentPlayer().getOpponent().getActivePieces());
         for (int i = 0; i<legals.size(); ++i){
             board.updateBoard(tmpBoard);
-//            board.slavPieces = board.copyArr(tmpCurrentPiece);
-//            board.vikingPieces = board.copyArr(tmpOpponentPiece);
-
-
             Move move = legals.get(i);
             board.resetEnem();
-
-
 //TODO
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             board.updateBoard(moveTransition.getTransitionBoard());
             if(moveTransition.getMoveStatus().isDone()){
-                //currentValue = 1;
-
                 currentValue = board.currentPlayer().getAlliance().isSlavs() ?
                         min(moveTransition.getTransitionBoard(), this.searchDepth-1) :
                         max(moveTransition.getTransitionBoard(), this.searchDepth-1);
@@ -67,16 +52,8 @@ public class MiniMax implements MoveStrategy {
             }
         }
         board.updateBoard(tmpBoard);
-//        board.slavPieces = board.copyArr(tmpCurrentPiece);
-//        board.vikingPieces = board.copyArr(tmpOpponentPiece);
-
-
-
-
         System.out.println(bestMove.toString());
-        //final long executionTime = System.currentTimeMillis() - startTime;
         System.out.println(highestSeenValue);
-        //System.out.println(lowestSeenValue);
         return bestMove;
     }
 
@@ -119,10 +96,4 @@ public class MiniMax implements MoveStrategy {
         }
         return highestSeenValue;
     }
-    // Сценарий, когда условие победы достигнуто,
-    // не на полной глубине. Можно отсечь дерево
-//    private static boolean isEndGameScenario(final Board board) {
-//        return board.checkSlavWinConditions() ||
-//                board.checkVikingWinConditions();
-//    }
 }

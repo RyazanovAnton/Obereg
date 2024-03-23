@@ -10,14 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class GameSetup extends JDialog {
-
     private PlayerType slavPlayerType;
     private PlayerType vikingPlayerType;
-    private JSpinner searchDepthSpinner;
-
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
-
     GameSetup(final JFrame frame,
               final boolean modal) {
         super(frame, modal);
@@ -47,12 +43,8 @@ class GameSetup extends JDialog {
         myPanel.add(vikingHumanButton);
         myPanel.add(vikingComputerButton);
 
-//        myPanel.add(new JLabel("Search"));
-//        this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(4, 0, 10, 1));
-
         final JButton cancelButton = new JButton("Cancel");
         final JButton okButton = new JButton("Start game");
-
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 slavPlayerType = slavComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
@@ -60,54 +52,32 @@ class GameSetup extends JDialog {
                 GameSetup.this.setVisible(false);
             }
         });
-
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Cancel");
                 GameSetup.this.setVisible(false);
             }
         });
-
         myPanel.add(cancelButton);
         myPanel.add(okButton);
-
         setLocationRelativeTo(frame);
         pack();
         setVisible(false);
     }
-
     void promptUser() {
         setVisible(true);
         repaint();
     }
-
     boolean isAIPlayer(final Player player) {
         if(player.getAlliance() == Alliance.SLAVS) {
             return getSlavPlayerType() == PlayerType.COMPUTER;
         }
         return getVikingPlayerType() == PlayerType.COMPUTER;
     }
-
     PlayerType getSlavPlayerType() {
         return this.slavPlayerType;
     }
-
     PlayerType getVikingPlayerType() {
         return this.vikingPlayerType;
-    }
-
-    private static JSpinner addLabeledSpinner(final Container c,
-                                              final String label,
-                                              final SpinnerModel model) {
-        final JLabel l = new JLabel(label);
-        c.add(l);
-        final JSpinner spinner = new JSpinner(model);
-        l.setLabelFor(spinner);
-        c.add(spinner);
-        return spinner;
-    }
-
-    int getSearchDepth() {
-        return (Integer)this.searchDepthSpinner.getValue();
     }
 }

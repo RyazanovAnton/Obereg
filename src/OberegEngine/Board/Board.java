@@ -32,9 +32,6 @@ public class Board{
         this.vikingPlayer = new VikingPlayer(this, vikingStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.slavPlayer, this.vikingPlayer);
     }
-
-
-
     @Override
     public String toString(){
          String builder = "";
@@ -52,7 +49,6 @@ public class Board{
                         } else {
                             builder += "W ";
                         }
-
                     }
                 }
             }
@@ -91,7 +87,7 @@ public class Board{
         }
         return false;
     }
-    // Проврка наличия врагов справа
+    // Проверка наличия врагов справа
     public boolean isEnemyOnTheRight(Tile tile){
         if(!BoardUtils.NINTH_COLUMN[tile.tileCoordinate]){
             if(this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_RAW).isTileOccupied() &&
@@ -107,17 +103,15 @@ public class Board{
         if(this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_COLUMN).isTileOccupied() &&
                 this.getTile(tile.tileCoordinate-BoardUtils.NEXT_ON_COLUMN).getPiece().getPieceAlliance() !=
                         this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
-            //System.out.println();
             return true;
         }
         return false;
     }
-    // Проврка наличия врагов снизу
+    // Проверка наличия врагов снизу
     public boolean isEnemyOnTheBottom(Tile tile) {
         if(this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_COLUMN).isTileOccupied() &&
                 this.getTile(tile.tileCoordinate+BoardUtils.NEXT_ON_COLUMN).getPiece().getPieceAlliance() !=
                         this.getTile(tile.tileCoordinate).getPiece().getPieceAlliance()){
-            //System.out.println();
             return true;
         }
         return false;
@@ -132,9 +126,7 @@ public class Board{
         return false;
     }
     // Создание коллекции допустимых ходов для альянса
-
     public ArrayList<Move> calculateLegalMoves(final Collection<Piece> pieces) {
-
         final ArrayList<Move> legalMoves = new ArrayList<>();
         for(final Piece piece : pieces){
             legalMoves.addAll(piece.calculateLegalMoves(this));
@@ -159,7 +151,6 @@ public class Board{
                 }
             }
         }
-        // check
         return activePieces;
     }
     // Получение доступа к содержимому Тайла по его порядковому номеру
@@ -279,7 +270,6 @@ public class Board{
                             this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
                         if(this.currentPlayer().getAlliance().isSlavs()){
-                            System.out.println("find horiz");
                         }
 
                     }
@@ -291,9 +281,7 @@ public class Board{
                             this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
                         piece.setEnemies();
                         if(this.currentPlayer().getAlliance().isSlavs()){
-                            System.out.println("find vert");
                         }
-
                     }
                 }
             }
@@ -368,11 +356,6 @@ public class Board{
         copyArr = (ArrayList<Piece>) oldArr.clone();
         return copyArr;
     }
-//    public void updatePieceArr(final Board board){
-//        ArrayList<Piece> copyArr = new ArrayList<>();
-//
-//        this.slavPieces = board.co
-//    }
     public void updateBoard(final Board board){
         this.gameBoard = board.gameBoard;
         this.slavPlayer = board.slavPlayer;
@@ -380,24 +363,19 @@ public class Board{
         this.slavPieces = board.slavPieces;
         this.vikingPieces = board.vikingPieces;
         this.currentPlayer = board.currentPlayer;
-
     }
     public Board deleteCapturedEnemies(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
-                //System.out.println("draw new board");
                 Board.Builder builder = new Board.Builder();
                 for (final Piece piece2 : board.currentPlayer().getActivePieces()) {
                     if(!piece2.getEnemies()){
                         builder.setPiece(piece2);
-                        //System.out.println("set 1st");
                     }
                 }
                 for (final Piece piece2 : board.currentPlayer().getOpponent().getActivePieces()) {
                     builder.setPiece(piece2);
-                    //System.out.println("set 2nd");
                 }
-                //builder.delPiece(piece.getPiecePosition());
                 builder.setMoveMaker(board.currentPlayer().getAlliance());
                 board = builder.build();
                 return board;
@@ -408,20 +386,16 @@ public class Board{
 
     public void delEnem(){
         ArrayList<Piece> toDelete = new ArrayList<>();
-//        if(true) {
         if(this.currentPlayer.getOpponent().getAlliance().isVikings()){
             for (Piece piece : slavPieces) {
                 if (piece.getEnemies()) {
-                    System.out.println("Trying to Del slavs");
                     this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
                     toDelete.add(piece);
                 }
             }
-//        }if(true){
         } else if(this.currentPlayer.getOpponent().getAlliance().isSlavs()){
             for(Piece piece : vikingPieces){
                 if(piece.getEnemies()){
-                    System.out.println("Trying to Del vikings");
                     this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
                     toDelete.add(piece);
                 }
@@ -430,13 +404,10 @@ public class Board{
         for(Piece piece : toDelete){
             slavPieces.remove(piece);
             vikingPieces.remove(piece);
-//            toDelete.remove(piece);
         }
-
         System.out.println(toDelete);
         toDelete.clear();
         System.out.println(toDelete);
-
     }
 
     public void resetEnem() {
@@ -450,52 +421,7 @@ public class Board{
                     piece.resetEnem();
                 }
         }
-
-//        if(this.currentPlayer.getAlliance().isVikings()){
-//            for (Piece piece : slavPieces) {
-//                if(piece.getEnemies()){
-//                    piece.resetEnem();
-//                }
-//                }
-//            }
-//        else if(this.currentPlayer.getAlliance().isSlavs()){
-//            for(Piece piece : vikingPieces){
-//                if(piece.getEnemies()){
-//                    piece.resetEnem();
-//                }
-//            }
-//        }
     }
-
-
-
-    public Board deleteCapturedEnemies2(Board board) {
-        for(Piece piece : board.currentPlayer().getActivePieces()){
-            if (piece.getEnemies()) {
-                //System.out.println("draw new board");
-                Board.Builder builder = new Board.Builder();
-                for (final Piece piece2 : board.currentPlayer().getActivePieces()) {
-                    if(!piece2.getEnemies()){
-                        builder.setPiece(piece2);
-                        //System.out.println("set 1st");
-                    }
-                }
-                for (final Piece piece2 : board.currentPlayer().getOpponent().getActivePieces()) {
-                    builder.setPiece(piece2);
-                    //System.out.println("set 2nd");
-                }
-                //builder.delPiece(piece.getPiecePosition());
-                builder.setMoveMaker(board.currentPlayer().getAlliance());
-                board = builder.build();
-                return board;
-            }
-        }
-        return board;
-    }
-
-
-
-
     // Вспомогательный класс Builder, который расставляет и удаляет фигуры с игровой доски
     public static class Builder{
         Map<Integer, Piece> boardConfig;

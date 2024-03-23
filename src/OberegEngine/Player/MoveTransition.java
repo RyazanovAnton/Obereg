@@ -23,25 +23,5 @@ public class MoveTransition {
     public Board getTransitionBoard() {
         return this.transitionBoard;
     }
-    // Метод для удаления фигур противника, которые были захвачены на текущем ходу.
-    // Если игрок в текущем ходу сам встал под захват своей фигуры, то она не удаляется
-    public Board deleteCapturedEnemies(Board board) {
-        for(Piece piece : board.currentPlayer().getActivePieces()){
-            if (piece.getEnemies()) {
-                Board.Builder builder = new Board.Builder();
-                for (final Piece piece2 : board.currentPlayer().getActivePieces()) {
-                    builder.setPiece(piece2);
-                }
-                for (final Piece piece2 : board.currentPlayer().getOpponent().getActivePieces()) {
-                    builder.setPiece(piece2);
-                }
-                builder.delPiece(piece.getPiecePosition());
-                builder.setMoveMaker(board.currentPlayer().getAlliance());
-                board = builder.build();
-                break;
-            }
-        }
-        return board;
-    }
 }
 

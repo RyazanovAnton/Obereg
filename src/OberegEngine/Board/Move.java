@@ -84,12 +84,6 @@ public class Move {
         Board newBoard = builder.build();
         newBoard.searchEnemies();
         newBoard = newBoard.deleteCapturedEnemies(newBoard);
-
-//        newBoard.calculateLegalMoves(this.board.vikingPieces);
-//        newBoard.calculateLegalMoves(this.board.slavPieces);
-//        newBoard.getAllLegalMoves();
-//        newBoard.currentPlayer().getLegalMoves();
-
         return newBoard;
     }
     // Вспомогательный класс, как наследник основного для определения недействительного хода
@@ -123,6 +117,5 @@ public class Move {
             return NULL_MOVE;
         }
     }
-
 }
 
