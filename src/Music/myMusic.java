@@ -9,7 +9,6 @@ import javax.sound.sampled.Clip;
 public class myMusic {
 
     public Clip myClip;
-    //boolean musicPlaying = true;
     public String location;
     public myMusic(String location) {
         this.location=location;

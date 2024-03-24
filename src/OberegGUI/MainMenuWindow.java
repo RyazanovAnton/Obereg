@@ -1,7 +1,6 @@
 package OberegGUI;
 
 import Music.myMusic;
-import OberegGUI.GamePropertyWindow;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -35,7 +34,6 @@ public class MainMenuWindow extends JFrame  {
             jlMainMenuLabels[i] = new JLabel(arrMainMenuLabels[i]);
             getContentPane().add(jlMainMenuLabels[i]);
             jlMainMenuLabels[i].setBounds(50,75+(i*75),400,70);
-            //jlMainMenuLabels[i].setBounds(550,220+(i*75),400,70);
             jlMainMenuLabels[i].setFont(mainFont);
             jlMainMenuLabels[i].setForeground(mainMenuColor);
             jlMainMenuLabels[i].setHorizontalAlignment(SwingConstants.LEFT);
@@ -67,7 +65,7 @@ public class MainMenuWindow extends JFrame  {
         jlMainMenuLabels[1].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                jButton1ActionPerformed(e);
+                selectTutorial(e);
             }
 
         });
@@ -108,7 +106,7 @@ public class MainMenuWindow extends JFrame  {
         });
     }
 
-    private void jButton1ActionPerformed(java.awt.event.MouseEvent evt) {
+    private void selectTutorial(java.awt.event.MouseEvent evt) {
         TutorialWindow tutorialWindow = new TutorialWindow(this);
         tutorialWindow.setVisible(true);
         this.setVisible(false);

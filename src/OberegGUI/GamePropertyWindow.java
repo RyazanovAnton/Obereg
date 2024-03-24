@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class GamePropertyWindow extends JFrame {
+
     private Rectangle frameSize = new Rectangle(200,100,1294,755);
     private JLabel jlGamePropertyBG, jlReturnBack;
     private JButton jbRusTeam, jbVikTeam, jbReturnBack;
@@ -70,23 +71,43 @@ public class GamePropertyWindow extends JFrame {
         jlGamePropertyBG.setIcon(withoutChoiceBG);
         this.setContentPane(jlGamePropertyBG);
         //this.getContentPane().add(jbReturnBack);
-
-        jbRusTeam = new JButton();
-        jbRusTeam.setBounds(390,650,180,50);
-
         ImageIcon startGame = new ImageIcon("./images/table3.jpg");
         ImageIcon startGame2 = new ImageIcon("./images/table4.jpg");
 
-
+        jbRusTeam = new JButton();
+        jbRusTeam.setBounds(390,650,180,50);
         jbRusTeam.setIcon(startGame);
 
         jbVikTeam = new JButton();
         jbVikTeam.setBounds(720,650,180,50);
         jbVikTeam.setIcon(startGame2);
 
-        this.pack();
+        jbReturnBack = new JButton();
+        jbReturnBack.setBounds(400,20,180,50);
+        jbReturnBack.setVisible(false);
+        jbReturnBack.setOpaque(false);
+        this.getContentPane().add(jbReturnBack);
+
+        //this.pack();
         myMusic rusTheme = new myMusic("./audio/wings.wav");
         myMusic vikTheme = new myMusic("./audio/valhalla.wav");
+        jbReturnBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (vikTheme.myClip!=null){
+                    vikTheme.musicOff();
+                }
+                else if(rusTheme.myClip!=null){
+                    rusTheme.musicOff();
+                }
+                setVisible(false);
+                dispose();
+                new MainMenuWindow();
+            }
+        });
+
+
+
         jlGamePropertyBG.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -95,10 +116,9 @@ public class GamePropertyWindow extends JFrame {
                     getContentPane().add(jbRusTeam);
                     getContentPane().remove(jbVikTeam);
 
-                    if (vikTheme.myClip==null){
+                    if (vikTheme.myClip==null && rusTheme.myClip==null){
                         rusTheme.musicOn();
-                    }
-                    else {
+                    }else if(vikTheme.myClip.isActive()){
                         vikTheme.musicOff();
                         rusTheme.musicOn();
                     }
@@ -107,10 +127,10 @@ public class GamePropertyWindow extends JFrame {
                     jlGamePropertyBG.setIcon(vikTeamChoice);
                     getContentPane().add(jbVikTeam);
                     getContentPane().remove(jbRusTeam);
-                    if (rusTheme.myClip==null){
+                    if (vikTheme.myClip==null && rusTheme.myClip==null){
                         vikTheme.musicOn();
                     }
-                    else{
+                    else if(rusTheme.myClip.isActive()){
                         rusTheme.musicOff();
                         vikTheme.musicOn();
                     }
@@ -146,11 +166,5 @@ public class GamePropertyWindow extends JFrame {
 
             }
         });
-
-
-
-
-
-
     }
 }
