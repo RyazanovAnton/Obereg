@@ -29,7 +29,7 @@ public class GameWithSLavsAI extends Observable{
 
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
-//    private final GameSetup gameSetup;
+    //    private final GameSetup gameSetup;
     private Board gameboard;
     private Tile sourceTile;
     private Tile destinationTile;
@@ -290,8 +290,8 @@ public class GameWithSLavsAI extends Observable{
                         }
                     });
 
-                        // Обновляем счетчики и проверяем условия победы,
-                        // после чего рисуем новую доску на экране
+                    // Обновляем счетчики и проверяем условия победы,
+                    // после чего рисуем новую доску на экране
                     //takenPiecesPanel.updateCounts(gameboard);
                     takenPiecesPanel.checkWinCondition(gameboard);
                     //takenPiecesPanel.currentMove(gameboard);
