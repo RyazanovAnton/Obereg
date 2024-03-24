@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 // Игровое поле
-public class GameWithVikingsAI extends Observable{
+public class GameInPvPMode extends Observable{
 
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
@@ -41,12 +41,12 @@ public class GameWithVikingsAI extends Observable{
     private static String defaultPieceImagesPath = "art/pieces/plain/";
 
     // SINGLETON
-    private static final GameWithVikingsAI INSTANCE = new GameWithVikingsAI();
+    private static final GameInPvPMode INSTANCE = new GameInPvPMode();
     public static boolean gameOver = false;
 
     // Конструктор для стартового отображения
     // игрового поля с расставленными фигурами
-    public GameWithVikingsAI() {
+    public GameInPvPMode() {
         myMusic startBattle = new myMusic("./audio/startbattle.wav");
         startBattle.musicOn();
         this.gameFrame = new JFrame("Obereg v.1.0");
@@ -60,7 +60,7 @@ public class GameWithVikingsAI extends Observable{
         this.gameFrame.setResizable(false);
         this.gameFrame.setBounds(200,100,1294,755);
         this.gameboard = Board.createStandardBoard();
-        this.boardPanel = new GameWithVikingsAI.BoardPanel();
+        this.boardPanel = new GameInPvPMode.BoardPanel();
         this.takenPiecesPanel = new GameInfoPanel(gameboard);
         this.gameFrame.getContentPane().add(takenPiecesPanel);
         this.gameFrame.getContentPane().add(boardPanel);
@@ -112,7 +112,6 @@ public class GameWithVikingsAI extends Observable{
         jlMainBG.setBounds(0,0,1280,720);
 
         this.gameFrame.getContentPane().add(jlMainBG);
-        this.addObserver(new TableGameAIWatcher());
         this.gameFrame.setVisible(true);
 
     }
@@ -150,12 +149,9 @@ public class GameWithVikingsAI extends Observable{
     //TODO
 
     public void show(){
-        GameWithVikingsAI.get().getBoardPanel().drawBoard(GameWithVikingsAI.get().getGameBoard());
-        //GameWithSLavsAI.get().getTakenPiecesPanel().updateCounts(gameboard);
-        GameWithVikingsAI.get().getTakenPiecesPanel().checkWinCondition(gameboard);
-        //GameWithSLavsAI.get().getTakenPiecesPanel().currentMove(gameboard);
+        GameInPvPMode.get().getBoardPanel().drawBoard(GameInPvPMode.get().getGameBoard());
     }
-    public static GameWithVikingsAI get(){
+    public static GameInPvPMode get(){
         return INSTANCE;
     }
     private Board getGameBoard(){
@@ -182,49 +178,12 @@ public class GameWithVikingsAI extends Observable{
         setChanged();
         notifyObservers(player);
     }
-    private static class TableGameAIWatcher implements Observer{
-        @Override
-        public void update(Observable o, Object arg) {
-            if (GameWithVikingsAI.get().getGameBoard().currentPlayer().getAlliance().isVikings()){
-                //TODO create an AI thread
-                // execute AI work
-                final AIBrains thinkTank = new AIBrains();
-                thinkTank.execute();
-            }
-        }
-        private static class AIBrains extends SwingWorker<Move, String>{
-            //у этого класса есть возможность деалать перемещения и корректировать строки
-            private AIBrains(){
-            }
-            @Override
-            protected Move doInBackground() throws Exception {
-                //для более глубокого поиска нужно альфа-бетта отсечение!
-                final MoveStrategy miniMax = new MiniMax(2);
-                final Move bestMove = miniMax.execute(GameWithVikingsAI.get().getGameBoard());
-                return bestMove;
-            }
-            @Override
-            public void done(){
-                //когда поток SwingWorker'a завершен - проводится работа по очистке в этом методе
-                try {
-                    final Move bestMove = get();
-                    GameWithVikingsAI.get().updateComputerMove(bestMove);
-                    GameWithVikingsAI.get().updateGameBoard(GameWithVikingsAI.get().getGameBoard().currentPlayer().makeMove(bestMove).getTransitionBoard());
-                    GameWithVikingsAI.get().moveMadeUpdate(GameWithVikingsAI.get().getGameBoard().currentPlayer().getOpponent());
 
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-    }
     // Класс, на котором могут размещаться фигуры
     private class TilePanel extends JPanel {
         private final int tileId;
 
-        TilePanel(final GameWithVikingsAI.BoardPanel boardPanel,
+        TilePanel(final GameInPvPMode.BoardPanel boardPanel,
                   final int tileId) {
             super(new GridBagLayout());
             this.tileId = tileId;
@@ -278,22 +237,12 @@ public class GameWithVikingsAI extends Observable{
                     }
 
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(!gameOver){
-                                if(gameboard.currentPlayer().getAlliance().isVikings()){
-                                    GameWithVikingsAI.get().moveMadeUpdate(GameWithVikingsAI.get().getGameBoard().currentPlayer().getOpponent());
-                                }
-
-                            }
-                        }
-                    });
-
                     // Обновляем счетчики и проверяем условия победы,
                     // после чего рисуем новую доску на экране
                     //takenPiecesPanel.updateCounts(gameboard);
+                    takenPiecesPanel.updateCounts(gameboard);
                     takenPiecesPanel.checkWinCondition(gameboard);
+                    takenPiecesPanel.currentMove(gameboard);
                     //takenPiecesPanel.currentMove(gameboard);
                     boardPanel.drawBoard(gameboard);
                 }

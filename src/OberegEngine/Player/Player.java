@@ -38,6 +38,27 @@ public abstract class Player {
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
 
+    public boolean isKingEscaped() {
+        for(Piece piece : board.getSlavPieces()){
+            if(piece.getPieceType().isKing() &&
+                            (piece.getPiecePosition() == 0 ||
+                            piece.getPiecePosition() == 8 ||
+                            piece.getPiecePosition() == 72 ||
+                            piece.getPiecePosition() == 80 )){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isKingCaptured() {
+        for(Piece piece : board.getSlavPieces()){
+            if(piece.getPieceType().isKing() && piece.getEnemies()){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 

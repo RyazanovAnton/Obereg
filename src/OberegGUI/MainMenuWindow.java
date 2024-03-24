@@ -12,7 +12,7 @@ import java.io.IOException;
 public class MainMenuWindow extends JFrame  {
 
 
-   private String[] arrMainMenuLabels = new String[]{"New Game", "Tutorial", "Options", "Quit"};
+   private String[] arrMainMenuLabels = new String[]{"New PvE Game", "New PvP Game","Tutorial", "Quit"};
     private JLabel[] jlMainMenuLabels;
     private JLabel jlMainBG;
     private Font mainFont = new Font("Blackburr", Font.PLAIN, 70);
@@ -33,7 +33,7 @@ public class MainMenuWindow extends JFrame  {
         for (int i=0; i<arrMainMenuLabels.length; i++){
             jlMainMenuLabels[i] = new JLabel(arrMainMenuLabels[i]);
             getContentPane().add(jlMainMenuLabels[i]);
-            jlMainMenuLabels[i].setBounds(50,75+(i*75),400,70);
+            jlMainMenuLabels[i].setBounds(50,80+(i*80),400,70);
             jlMainMenuLabels[i].setFont(mainFont);
             jlMainMenuLabels[i].setForeground(mainMenuColor);
             jlMainMenuLabels[i].setHorizontalAlignment(SwingConstants.LEFT);
@@ -61,8 +61,17 @@ public class MainMenuWindow extends JFrame  {
             }
 
         });
-
         jlMainMenuLabels[1].addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dispose();
+                mainTheme.musicOff();
+                GameInPvPMode.get().show();
+            }
+
+        });
+
+        jlMainMenuLabels[2].addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectTutorial(e);

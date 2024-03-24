@@ -1,3 +1,4 @@
+import OberegGUI.GameInPvPMode;
 import OberegGUI.LaunchLabel;
 import OberegGUI.MainMenuWindow;
 import OberegGUI.TutorialWindow;
@@ -7,7 +8,8 @@ public class Main {
         //Windows.MainMenu mm1 = new Windows.MainMenu();
 
         LaunchLabel lw1 = new LaunchLabel();
-        //GameWithSLavsAI.get().show();
+        //
+//        GameInPvPMode.get().show();
 
 
 

@@ -48,22 +48,22 @@ public int pieceValue(Board board){
     }
     private int kingCaptured(Board board){
     int kingCapturedValue = 0;
-    for(Piece piece : board.currentPlayer().getOpponent().getActivePieces()){
+    for(Piece piece : board.getSlavPieces()){
         if(piece.getPieceType().isKing() && piece.getEnemies()){
-            kingCapturedValue = -100000;
+            kingCapturedValue = -300000;
         }
     }
     return kingCapturedValue;
     }
     private int kingEscaped(Board board){
         int kingEscaped = 0;
-        for(Piece piece : board.currentPlayer().getActivePieces()){
+        for(Piece piece : board.getSlavPieces()){
             if(piece.getPieceType().isKing() &&
                         (piece.getPiecePosition()==0 ||
                         piece.getPiecePosition()==8 ||
                         piece.getPiecePosition() == 72 ||
                         piece.getPiecePosition() == 80)){
-            kingEscaped = 10000;
+            kingEscaped = 30000;
             }
         }
         return kingEscaped;
