@@ -10,7 +10,6 @@ import OberegEngine.Player.AI.MiniMax;
 import OberegEngine.Player.AI.MoveStrategy;
 import OberegEngine.Player.MoveTransition;
 import OberegEngine.Player.Player;
-import TODOLater.MainMenuWindow;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -37,10 +36,10 @@ public class GameWithSLavsAI extends Observable{
     private Piece humanMovedPiece;
     private Move computerMove;
     private boolean highLightLegalMoves = true;
-    private final TakenPiecesPanel takenPiecesPanel;
+    private final GameInfoPanel takenPiecesPanel;
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(57, 57);
     private static String defaultPieceImagesPath = "art/pieces/plain/";
-    private final Color darkTileColor = Color.decode("#593E1A");
+
     // SINGLETON
     private static final GameWithSLavsAI INSTANCE = new GameWithSLavsAI();
     public static boolean gameOver = false;
@@ -56,12 +55,13 @@ public class GameWithSLavsAI extends Observable{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        this.gameFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.gameFrame.setLayout(null);
         this.gameFrame.setResizable(false);
         this.gameFrame.setBounds(200,100,1294,755);
         this.gameboard = Board.createStandardBoard();
         this.boardPanel = new GameWithSLavsAI.BoardPanel();
-        this.takenPiecesPanel = new TakenPiecesPanel(gameboard);
+        this.takenPiecesPanel = new GameInfoPanel(gameboard);
         this.gameFrame.getContentPane().add(takenPiecesPanel);
         this.gameFrame.getContentPane().add(boardPanel);
         this.gameFrame.addWindowListener(new WindowListener() {
@@ -168,7 +168,7 @@ public class GameWithSLavsAI extends Observable{
         this.computerMove = move;
     }
     // Метод может быть приватным, потому что использован паттерн Синглтон
-    private TakenPiecesPanel getTakenPiecesPanel(){
+    private GameInfoPanel getTakenPiecesPanel(){
         return this.takenPiecesPanel;
     }
     private BoardPanel getBoardPanel(){

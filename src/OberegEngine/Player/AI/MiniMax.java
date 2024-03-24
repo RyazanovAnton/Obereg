@@ -54,7 +54,7 @@ public class MiniMax implements MoveStrategy {
         board.updateBoard(tmpBoard);
         System.out.println("AI move: " + bestMove.toString());
         System.out.println(highestSeenValue);
-        System.out.println(lowestSeenValue);
+        //System.out.println(lowestSeenValue);
         return bestMove;
     }
 
