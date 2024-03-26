@@ -2,7 +2,7 @@ import OberegGUI.GameWithSLavsAI;
 
 public class Tests {
     public static void main(String[] args) {
-    //    Board board = Board.createStandardBoard();
+    //    TODOLater.Board board = TODOLater.Board.createStandardBoard();
      //   System.out.println(board);
        //
         //Table.get().show();

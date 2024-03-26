@@ -1,8 +1,5 @@
 package OberegEngine.Player;
 
-import OberegEngine.Player.Player;
-import OberegEngine.Player.SlavPlayer;
-import OberegEngine.Player.VikingPlayer;
 // Перечисление возможных альянсов
 public enum Alliance {
     SLAVS {

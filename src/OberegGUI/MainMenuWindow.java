@@ -10,9 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MainMenuWindow extends JFrame  {
-
-
-   private String[] arrMainMenuLabels = new String[]{"New PvE Game", "New PvP Game","Tutorial", "Quit"};
+    private String[] arrMainMenuLabels = new String[]{"New PvE Game", "New PvP Game","Tutorial", "Quit"};
     private JLabel[] jlMainMenuLabels;
     private JLabel jlMainBG;
     private Font mainFont = new Font("Blackburr", Font.PLAIN, 70);
@@ -38,12 +36,6 @@ public class MainMenuWindow extends JFrame  {
             jlMainMenuLabels[i].setForeground(mainMenuColor);
             jlMainMenuLabels[i].setHorizontalAlignment(SwingConstants.LEFT);
         }
-
-
-
-
-
-
         this.setResizable(false);
         this.setTitle("Obereg v1.0");
         try {
@@ -85,7 +77,7 @@ public class MainMenuWindow extends JFrame  {
                 System.exit(0);
             }
         });
-
+        // Закрытие окна программы
         this.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
@@ -114,7 +106,7 @@ public class MainMenuWindow extends JFrame  {
             public void windowDeactivated(WindowEvent e) {}
         });
     }
-
+    // Метод, который вызывает новое окно (Правила игры) с сылкой на текущее окно
     private void selectTutorial(java.awt.event.MouseEvent evt) {
         TutorialWindow tutorialWindow = new TutorialWindow(this);
         tutorialWindow.setVisible(true);

@@ -311,6 +311,76 @@ public class Board{
             }
         }
     }
+
+
+
+    public void searchKingEnemies() {
+        for (Piece piece : this.currentPlayer().getOpponent().getActivePieces()) {
+            // Если князь расположена на троне, то захватить его могут только 4 врага
+            if (piece.getPieceType().isKing() && piece.getPiecePosition() == 40) {
+                if (this.isEnemyOnTheRight(this.getTile(40)) &&
+                        this.isEnemyOnTheLeft(this.getTile(40)) &&
+                        this.isEnemyOnTheTop(this.getTile(40)) &&
+                        this.isEnemyOnTheBottom(this.getTile(40))
+                ) {
+                    piece.setEnemies();
+                }
+            }
+            // Если князь расположен рядом с троном, то захватить его могут только 3 врага
+            if (piece.getPieceType().isKing() && piece.getPiecePosition() != 40) {
+                if ((piece.getPiecePosition() == 39 &&
+                        this.isEnemyOnTheLeft(this.getTile(39)) &&
+                        this.isEnemyOnTheTop(this.getTile(39)) &&
+                        this.isEnemyOnTheBottom(this.getTile(39))) ||
+                        (piece.getPiecePosition() == 31 &&
+                                this.isEnemyOnTheLeft(this.getTile(31)) &&
+                                this.isEnemyOnTheTop(this.getTile(31)) &&
+                                this.isEnemyOnTheRight(this.getTile(31))) ||
+                        (piece.getPiecePosition() == 41 &&
+                                this.isEnemyOnTheRight(this.getTile(41)) &&
+                                this.isEnemyOnTheTop(this.getTile(41)) &&
+                                this.isEnemyOnTheBottom(this.getTile(41))) ||
+                        (piece.getPiecePosition() == 49 &&
+                                this.isEnemyOnTheLeft(this.getTile(49)) &&
+                                this.isEnemyOnTheRight(this.getTile(49)) &&
+                                this.isEnemyOnTheBottom(this.getTile(49)))
+                ) {
+                    piece.setEnemies();
+                }
+            }
+            if (piece.getPieceType().isKing() &&
+                    (piece.getPiecePosition() != 40 &&
+                            piece.getPiecePosition() != 31 &&
+                            piece.getPiecePosition() != 39 &&
+                            piece.getPiecePosition() != 41 &&
+                            piece.getPiecePosition() != 49)
+            ) {
+                // Проверка не зажат ли Князь на поле между двумя врагами по горизонтали
+                if (BoardUtils.isValidTileCoordinate(piece.getPiecePosition() - BoardUtils.NEXT_ON_RAW) &&
+                        BoardUtils.isValidTileCoordinate(piece.getPiecePosition() + BoardUtils.NEXT_ON_RAW)) {
+                    if (this.isEnemyOnTheLeft(this.getTile(piece.getPiecePosition())) &&
+                            this.isEnemyOnTheRight(this.getTile(piece.getPiecePosition()))) {
+                        piece.setEnemies();
+                    }
+                }
+                // Проверка не зажат ли Князь на поле двумя врагами по вертикали
+                if (BoardUtils.isValidTileCoordinate(piece.getPiecePosition() - BoardUtils.NEXT_ON_COLUMN) &&
+                        BoardUtils.isValidTileCoordinate(piece.getPiecePosition() + BoardUtils.NEXT_ON_COLUMN)) {
+                    if (this.isEnemyOnTheTop(this.getTile(piece.getPiecePosition())) &&
+                            this.isEnemyOnTheBottom(this.getTile(piece.getPiecePosition()))) {
+                        piece.setEnemies();
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
     // Проверка условий завершения игры - победа Варягов
     public boolean checkSlavWinConditions(){
         // Все воины варягов захвачены
@@ -350,12 +420,7 @@ public class Board{
         }
         else return false;
     }
-
-    public ArrayList<Piece> copyArr(ArrayList<Piece> oldArr){
-        ArrayList<Piece> copyArr = new ArrayList<>();
-        copyArr = (ArrayList<Piece>) oldArr.clone();
-        return copyArr;
-    }
+    // Метод для обновления игровой доски
     public void updateBoard(final Board board){
         this.gameBoard = board.gameBoard;
         this.slavPlayer = board.slavPlayer;
@@ -364,6 +429,7 @@ public class Board{
         this.vikingPieces = board.vikingPieces;
         this.currentPlayer = board.currentPlayer;
     }
+    // Снятие фигур противника, которые были захвачены в результате хода
     public Board deleteCapturedEnemies(Board board) {
         for(Piece piece : board.currentPlayer().getActivePieces()){
             if (piece.getEnemies()) {
@@ -383,33 +449,7 @@ public class Board{
         }
         return board;
     }
-
-    public void delEnem(){
-        ArrayList<Piece> toDelete = new ArrayList<>();
-        if(this.currentPlayer.getOpponent().getAlliance().isVikings()){
-            for (Piece piece : slavPieces) {
-                if (piece.getEnemies()) {
-                    this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
-                    toDelete.add(piece);
-                }
-            }
-        } else if(this.currentPlayer.getOpponent().getAlliance().isSlavs()){
-            for(Piece piece : vikingPieces){
-                if(piece.getEnemies()){
-                    this.setTile(piece.getPiecePosition(), new Tile.EmptyTile(piece.getPiecePosition()));
-                    toDelete.add(piece);
-                }
-            }
-        }
-        for(Piece piece : toDelete){
-            slavPieces.remove(piece);
-            vikingPieces.remove(piece);
-        }
-        System.out.println(toDelete);
-        toDelete.clear();
-        System.out.println(toDelete);
-    }
-
+    // Метод для сброса флага наличия врагов у фигур
     public void resetEnem() {
         for (Piece piece : slavPieces) {
                 if(piece.getEnemies()){
@@ -445,7 +485,7 @@ public class Board{
             this.nextMoveMaker = nextMoveMaker;
             return this;
         }
-        // Создание нового экземпляра класса Board (новая доска)
+        // Создание нового экземпляра класса TODOLater.Board (новая доска)
         public Board build(){
             return new Board(this);
         }

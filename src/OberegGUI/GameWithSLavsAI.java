@@ -26,10 +26,8 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 // Игровое поле
 public class GameWithSLavsAI extends Observable{
-
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
-    //    private final GameSetup gameSetup;
     private Board gameboard;
     private Tile sourceTile;
     private Tile destinationTile;
@@ -92,12 +90,11 @@ public class GameWithSLavsAI extends Observable{
             @Override
             public void windowDeactivated(WindowEvent e) {}
         });
-
+        // Кнопка возврата в главное меню
         JButton jbBackToMainMenu = new JButton("Back");
         jbBackToMainMenu.setBounds(50,550,180,90);
         jbBackToMainMenu.setOpaque(false);
         this.gameFrame.getContentPane().add(jbBackToMainMenu);
-
         jbBackToMainMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,14 +107,11 @@ public class GameWithSLavsAI extends Observable{
         ImageIcon mainMenuBG = new ImageIcon("./images/gamewindowbg.jpg");
         JLabel jlMainBG = new JLabel(mainMenuBG);
         jlMainBG.setBounds(0,0,1280,720);
-
         this.gameFrame.getContentPane().add(jlMainBG);
         this.addObserver(new TableGameAIWatcher());
         this.gameFrame.setVisible(true);
 
     }
-
-
 
     // Служебный класс для создания сетки 9х9, куда будут добавляться тайлы
     private class BoardPanel extends JPanel {
@@ -134,8 +128,6 @@ public class GameWithSLavsAI extends Observable{
             }
             validate();
         }
-
-
         // Метод для отрисовки доски, состоящей из 81 тайла
         public void drawBoard(final Board board) {
             removeAll();
@@ -147,13 +139,10 @@ public class GameWithSLavsAI extends Observable{
             repaint();
         }
     }
-    //TODO
-
+    // Синглтон. отображение одного экземпляра доски
     public void show(){
         GameWithSLavsAI.get().getBoardPanel().drawBoard(GameWithSLavsAI.get().getGameBoard());
-        //GameWithSLavsAI.get().getTakenPiecesPanel().updateCounts(gameboard);
         GameWithSLavsAI.get().getTakenPiecesPanel().checkWinCondition(gameboard);
-        //GameWithSLavsAI.get().getTakenPiecesPanel().currentMove(gameboard);
     }
     public static GameWithSLavsAI get(){
         return INSTANCE;
@@ -193,7 +182,7 @@ public class GameWithSLavsAI extends Observable{
             }
         }
         private static class AIBrains extends SwingWorker<Move, String>{
-            //у этого класса есть возможность деалать перемещения и корректировать строки
+            //у этого класса есть возможность делать перемещения и корректировать строки
             private AIBrains(){
             }
             @Override
@@ -276,8 +265,6 @@ public class GameWithSLavsAI extends Observable{
                             }
                         }
                     }
-
-
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
@@ -289,12 +276,9 @@ public class GameWithSLavsAI extends Observable{
                             }
                         }
                     });
-
-                    // Обновляем счетчики и проверяем условия победы,
+                    // проверяем условия победы,
                     // после чего рисуем новую доску на экране
-                    //takenPiecesPanel.updateCounts(gameboard);
                     takenPiecesPanel.checkWinCondition(gameboard);
-                    //takenPiecesPanel.currentMove(gameboard);
                     boardPanel.drawBoard(gameboard);
                 }
 

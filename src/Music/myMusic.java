@@ -5,7 +5,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-
 public class myMusic {
 
     public Clip myClip;
@@ -13,8 +12,6 @@ public class myMusic {
     public myMusic(String location) {
         this.location=location;
     }
-
-
 
     public void musicOn(){
         try {
@@ -32,15 +29,6 @@ public class myMusic {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-//        if (bool){
-//
-//
-//
-//        }
-//        else {
-//            myClip.stop();
-//            myClip.close();
-//        }
     }
 
     public void musicOff(){

@@ -1,9 +1,5 @@
 package OberegEngine.Board;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 public class BoardUtils {
     // Массив булевых значений для проверки исключений по первому столбцу
     public static final boolean[] FIRST_COLUMN = initColumn(0);

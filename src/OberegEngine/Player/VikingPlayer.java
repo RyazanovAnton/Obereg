@@ -5,7 +5,6 @@ import OberegEngine.Board.Move;
 import OberegEngine.Pieces.Piece;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class VikingPlayer extends Player{
     public VikingPlayer(final Board board,

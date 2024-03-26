@@ -12,10 +12,10 @@ import java.io.IOException;
 
 public class TutorialWindow extends JFrame {
     private final JFrame parent;
-    JButton jbReturnBack;
-    JButton jbPrevPage;
-    JButton jbNextPage;
-
+    private JButton jbReturnBack;
+    private JButton jbPrevPage;
+    private JButton jbNextPage;
+    private Font font = new Font("Arial", NORMAL, 18);
     private Rectangle frameSize = new Rectangle(200,100,1294,755);
     public TutorialWindow(JFrame parent){
         this.parent = parent;
@@ -68,9 +68,7 @@ public class TutorialWindow extends JFrame {
         ImageIcon tutorialWindowBG = new ImageIcon("./images/tutorialwindowbg2.jpg");
         JLabel jlMainBG = new JLabel(tutorialWindowBG);
         jlMainBG.setBounds(0,0,1280,720);
-
         this.getContentPane().add(jlMainBG);
-
 
         jbPrevPage = new JButton();
         jbPrevPage.setBounds(570,640,50,50);
@@ -86,7 +84,6 @@ public class TutorialWindow extends JFrame {
                 if(centralArea3.isVisible()){
                     centralArea3.setVisible(false);
                     centralArea2.setVisible(true);
-
                 }
             }
         });
@@ -100,7 +97,6 @@ public class TutorialWindow extends JFrame {
                 if(centralArea2.isVisible()){
                     centralArea2.setVisible(false);
                     centralArea3.setVisible(true);
-
                 }
                 if(centralArea1.isVisible()){
                     centralArea1.setVisible(false);
@@ -122,8 +118,7 @@ public class TutorialWindow extends JFrame {
         });
     }
 
-
-        Font font = new Font("Arial", NORMAL, 18);
+    // Первая страница правил игры
     private class DescriptionOfRules1 extends JPanel{
         Rectangle frameSize = new Rectangle(290,45,740,650);
         DescriptionOfRules1(){
@@ -131,7 +126,6 @@ public class TutorialWindow extends JFrame {
             this.setBounds(new Rectangle());
             this.setBounds(frameSize);
             this.setOpaque(false);
-            //this.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
             this.setVisible(true);
             this.setFont(font);
             this.setForeground(Color.BLACK);
@@ -158,7 +152,7 @@ public class TutorialWindow extends JFrame {
 
             }
     }
-
+    // Вторая страница правил игры
     private class DescriptionOfRules2 extends JPanel {
         private  ImageIcon rules1 = new ImageIcon("./art/rules1.png");
         Rectangle frameSize = new Rectangle(290, 45, 740, 650);
@@ -168,7 +162,6 @@ public class TutorialWindow extends JFrame {
             this.setBounds(new Rectangle());
             this.setBounds(frameSize);
             this.setOpaque(false);
-            //this.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
             this.setVisible(true);
             this.setFont(font);
             this.setForeground(Color.BLACK);
@@ -195,6 +188,7 @@ public class TutorialWindow extends JFrame {
             this.setVisible(false);
         }
     }
+    //Третья страница правил игры
     private class DescriptionOfRules3 extends JPanel {
         private  ImageIcon rules2 = new ImageIcon("./art/rules2.png");
         private  ImageIcon rules3 = new ImageIcon("./art/rules3.png");
@@ -241,7 +235,7 @@ public class TutorialWindow extends JFrame {
         }
     }
 
-
+    // Метод для возвращения в основное меню
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         this.parent.setVisible(true);
         this.setVisible(false);

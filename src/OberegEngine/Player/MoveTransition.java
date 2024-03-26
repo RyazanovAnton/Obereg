@@ -2,7 +2,6 @@ package OberegEngine.Player;
 
 import OberegEngine.Board.Board;
 import OberegEngine.Board.Move;
-import OberegEngine.Pieces.Piece;
 
 public class MoveTransition {
     private final Board transitionBoard;

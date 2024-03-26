@@ -2,12 +2,10 @@ package OberegEngine.Player.AI;
 
 import OberegEngine.Board.Board;
 import OberegEngine.Board.BoardUtils;
-import OberegEngine.Board.Tile;
 import OberegEngine.Pieces.King;
 import OberegEngine.Pieces.Piece;
 import OberegEngine.Pieces.Warrior;
-import OberegEngine.Player.Player;
-import OberegEngine.Player.SlavPlayer;
+
 
 
 
@@ -47,12 +45,13 @@ public int pieceValue(Board board){
         return mobility;
     }
     private int kingCaptured(Board board){
-    int kingCapturedValue = 0;
-    for(Piece piece : board.getSlavPieces()){
-        if(piece.getPieceType().isKing() && piece.getEnemies()){
-            kingCapturedValue = -300000;
+        int kingCapturedValue = 0;
+        for(Piece piece : board.getSlavPieces()){
+            if(piece.getPieceType().isKing() && (piece.getEnemies() || board.currentPlayer().isKingCaptured())){
+                kingCapturedValue = -300000;
+            }
         }
-    }
+
     return kingCapturedValue;
     }
     private int kingEscaped(Board board){

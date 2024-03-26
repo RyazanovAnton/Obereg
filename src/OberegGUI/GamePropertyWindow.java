@@ -17,8 +17,6 @@ public class GamePropertyWindow extends JFrame {
     private myMusic vikTheme = new myMusic("./audio/valhalla.wav");
     private Rectangle frameSize = new Rectangle(200,100,1294,755);
     private JLabel jlGamePropertyBG, jlReturnBack, jlRusTeam, jlVikTeam;
-
-
     public GamePropertyWindow(){
         this.setBounds(frameSize);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
